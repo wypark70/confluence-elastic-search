@@ -1,0 +1,60 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="elastic-search" />
+
+    <!-- add our web resources -->
+    <web-resource key="elastic-search-resources" name="elastic-search Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="elastic-search.css" location="/css/elastic-search.css" />
+        <resource type="download" name="elastic-search.js" location="/js/elastic-search.js" />
+        <resource type="download" name="images/" location="/images" />
+        <context>elastic-search</context>
+    </web-resource>
+
+    <web-resource key="my-dialog-resources" name="Dialog Resources">
+        <dependency>com.atlassian.auiplugin:aui-dialog2</dependency>
+        <dependency>com.atlassian.auiplugin:aui-flag</dependency>
+        <resource type="download" name="dialog.js" location="/js/dialog.js" />
+        <context>atl.general</context>
+        <context>atl.admin</context>
+    </web-resource>
+
+    <rest key="my-rest-api" path="/myplugin" version="1.0">
+        <description>Provides JSON data</description>
+        <package>com.atsoft.confluence.plugin.elasticsearch.rest</package>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </rest>
+
+    <!-- Struts2 Action 등록 -->
+    <xwork key="dialog-action" name="Dialog Action">
+        <package name="dialog" extends="default" namespace="/plugins/elasticsearch">
+            <action name="dialog"
+                class="com.atsoft.confluence.plugin.elasticsearch.action.DialogAction">
+                <result name="success" type="velocity">/templates/dialog.vm</result>
+            </action>
+        </package>
+    </xwork>
+
+    <!-- 웹 아이템: 헤더에 다이얼로그 페이지 링크 추가 -->
+    <web-item key="dialog-page-link" section="system.header/left" weight="40">
+        <label>다이얼로그 페이지</label>
+        <link>/plugins/elasticsearch/dialog.action</link>
+        <styleClass>aui-button</styleClass>
+    </web-item>
+
+    <web-item key="open-dialog-btn" section="system.header/left" weight="41">
+        <label key="다이얼로그 열기" />
+        <link linkId="btn-open-my-dialog">javascript:void(0)</link>
+        <styleClass>aui-button</styleClass>
+    </web-item>
+
+</atlassian-plugin>

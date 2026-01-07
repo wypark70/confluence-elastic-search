@@ -1,0 +1,27 @@
+<section id="my-custom-dialog" class="aui-dialog2 aui-dialog2-medium" aria-hidden="true" role="dialog">
+    <header class="aui-dialog2-header">
+        <h2 class="aui-dialog2-header-main">사용자 의견 보내기</h2>
+        <a class="aui-dialog2-header-close">
+            <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span>
+        </a>
+    </header>
+
+    <div class="aui-dialog2-content">
+        <form class="aui">
+            <div class="field-group">
+                <label for="feedback-text">의견 내용</label>
+                <textarea class="textarea" name="feedback" id="feedback-text" placeholder="내용을 입력하세요..."></textarea>
+            </div>
+        </form>
+    </div>
+
+    <footer class="aui-dialog2-footer">
+        <div class="aui-dialog2-footer-actions">
+            <button id="btn-submit-dialog" class="aui-button aui-button-primary">전송</button>
+            <button id="btn-close-dialog" class="aui-button aui-button-link">취소</button>
+        </div>
+        <div class="aui-dialog2-footer-hint" id="dialog-spinner" style="display:none;">
+            <span class="aui-icon aui-icon-wait">Loading...</span> 처리 중...
+        </div>
+    </footer>
+</section>
