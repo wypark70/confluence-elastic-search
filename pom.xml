@@ -60,6 +60,14 @@
             <artifactId>spring-context</artifactId>
             <scope>provided</scope>
         </dependency>
+        
+        <!-- Servlet API dependencies -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- WIRED TEST RUNNER DEPENDENCIES -->
         <dependency>
@@ -139,6 +147,90 @@
 
                 </configuration>
             </plugin>
+            
+            <!-- Frontend Maven Plugin for Multi-SPA Build -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <workingDirectory>frontend</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>frontend install</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <executable>pnpm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build frontend</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <executable>pnpm</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>build</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Copy Frontend Build Resources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-user-app</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/user-app</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/frontend/dist/user-app</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-admin-app</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/admin-app</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/frontend/dist/admin-app</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -154,6 +246,11 @@
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
+        
+        <!-- Frontend build properties -->
+        <frontend.maven.plugin.version>1.15.0</frontend.maven.plugin.version>
+        <node.version>18.19.0</node.version>
+        <pnpm.version>8.15.0</pnpm.version>
     </properties>
 
 </project>
