@@ -19,12 +19,14 @@
 		onInput 
 	}: Props = $props();
 
-	let inputValue: string = value;
+	let inputValue = $state();
 	let inputElement: HTMLInputElement;
 
 	// Sync with props changes
 	$effect(() => {
-		inputValue = value;
+		if (inputValue !== value) {
+			inputValue = value;
+		}
 	});
 
 	// Debounced search

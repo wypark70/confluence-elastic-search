@@ -12,3 +12,7 @@ export * from './utils/validation';
 
 // Shared stores
 export * from './stores/theme';
+
+// i18n
+export * as m from './lib/i18n/messages.js';
+export { getLocale, setLocale, locales, baseLocale } from './lib/i18n/runtime.js';

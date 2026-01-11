@@ -78,7 +78,7 @@
 	
 	{#if inputValue}
 		<button
-			onclick={handleClear}
+			onlick={handleClear}
 			class="absolute top-1/2 right-0 -translate-y-1/2 text-gray-500 dark:text-[#c9d1d9] p-1 hover:text-gray-700 dark:hover:text-[#c9d1d9]"
 			aria-label="Clear search"
 		>

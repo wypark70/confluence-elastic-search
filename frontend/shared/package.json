@@ -10,23 +10,20 @@
 		"./types/*": "./src/types/*",
 		"./utils/*": "./src/utils/*",
 		"./api/*": "./src/api/*",
-		"./stores/*": "./src/stores/*"
+		"./stores/*": "./src/stores/*",
+		"./i18n/*": "./src/lib/i18n/*"
 	},
-"scripts": {
-	"build": "tsc",
-	"clean": "rm -rf dist"
-},
+ "scripts": {
+		"generate:i18n": "paraglide-js compile --project ./project.inlang --outdir ./src/lib/i18n",
+		"build": "pnpm generate:i18n && tsc",
+		"clean": "rm -rf dist"
+	},
 	"dependencies": {
 		"lucide-svelte": "^0.562.0"
 	},
-	"devDependencies": {
-		"svelte": "^5.45.6",
-		"typescript": "^5.9.3",
-		"@sveltejs/kit": "^2.49.1",
-		"tailwindcss": "^4.1.17",
-		"@tailwindcss/vite": "^4.1.17"
-	},
+
 	"peerDependencies": {
 		"svelte": "^5.45.6"
-	}
+	},
+	"devDependencies": {}
 }

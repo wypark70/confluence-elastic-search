@@ -203,7 +203,7 @@
                             <outputDirectory>${project.build.outputDirectory}/user-app</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/frontend/dist/user-app</directory>
+                                    <directory>${project.basedir}/frontend/dist/user-app</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
@@ -211,7 +211,7 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <execution>
+                     <execution>
                         <id>copy-admin-app</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -221,7 +221,25 @@
                             <outputDirectory>${project.build.outputDirectory}/admin-app</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/frontend/dist/admin-app</directory>
+                                    <directory>${project.basedir}/frontend/dist/admin-app</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-demo-app</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/demo-app</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/frontend/dist/demo-app</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>

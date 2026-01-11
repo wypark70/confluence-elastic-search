@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Settings, Users, BarChart, Database, Shield } from 'lucide-svelte';
+	import { m } from '@elastic-search/shared';
 
 	let selectedSection = $state('general');
 
@@ -51,10 +52,10 @@
 	<header class="bg-white shadow-sm border-b border-gray-200 dark:bg-[#161b22] dark:border-gray-800">
 		<div class="px-6 py-4">
 			<h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
-				Elastic Search Configuration
+				{m.elastic_search_configuration()}
 			</h1>
 			<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-				Manage and configure your Confluence Elastic Search plugin
+				{m.manage_configure_plugin()}
 			</p>
 		</div>
 	</header>
@@ -72,11 +73,11 @@
 					>
 						<div class="flex items-center space-x-3">
 							<div class="flex h-8 w-8 items-center justify-center rounded {section.color}">
-								<svelte:component this={section.icon} size={16} class="text-white" />
+								<section.icon size={16} class="text-white" />
 							</div>
 							<div class="flex-1 text-left">
-								<div class="font-medium">{section.title}</div>
-								<div class="text-xs text-gray-500 dark:text-gray-400">{section.description}</div>
+							<div class="font-medium">{m[section.id + '_title']()}</div>
+							<div class="text-xs text-gray-500 dark:text-gray-400">{m[section.id + '_description']()}</div>
 							</div>
 						</div>
 					</button>
@@ -88,37 +89,37 @@
 		<main class="flex-1 p-6">
 			{#if selectedSection === 'general'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">General Settings</h2>
+					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.general_title()}</h2>
 					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
-						<p>General configuration options will go here...</p>
+						<p>{m.general_description()}</p>
 					</div>
 				</section>
 			{:else if selectedSection === 'users'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">User Management</h2>
+					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.users_title()}</h2>
 					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
-						<p>User management interface will go here...</p>
+						<p>{m.users_description()}</p>
 					</div>
 				</section>
 			{:else if selectedSection === 'analytics'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Analytics</h2>
+					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.analytics_title()}</h2>
 					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
-						<p>Analytics dashboard will go here...</p>
+						<p>{m.analytics_description()}</p>
 					</div>
 				</section>
 			{:else if selectedSection === 'index'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Index Management</h2>
+					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.index_title()}</h2>
 					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
-						<p>Index management interface will go here...</p>
+						<p>{m.index_description()}</p>
 					</div>
 				</section>
 			{:else if selectedSection === 'security'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Security</h2>
+					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.security_title()}</h2>
 					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
-						<p>Security settings will go here...</p>
+						<p>{m.security_description()}</p>
 					</div>
 				</section>
 			{/if}

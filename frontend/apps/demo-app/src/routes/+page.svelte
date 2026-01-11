@@ -10,7 +10,7 @@
 		FileText,
 		Home,
 		ChevronDown,
-		Search
+
 	} from 'lucide-svelte';
 
 	// Mock data to match the screenshot exactly
@@ -91,8 +91,7 @@
 					class="group flex w-full items-center justify-between rounded p-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-[#2d333b]"
 				>
 					<div class="flex items-center gap-3 text-gray-700 dark:text-[#c9d1d9]">
-						<svelte:component
-							this={filter.icon}
+						<filter.icon
 							size={18}
 							class="text-gray-500 group-hover:text-gray-900 dark:text-[#768390] dark:group-hover:text-[#c9d1d9]"
 						/>
@@ -103,7 +102,7 @@
 			{/each}
 
 			<div class="mt-auto pt-4">
-				<a href="#" class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]">Advanced search</a>
+				<button class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]">Advanced search</button>
 			</div>
 		</div>
 
@@ -127,7 +126,7 @@
 
 			<div class="mb-6 flex items-end justify-between">
 				<h2 class="text-lg text-gray-600 dark:text-[#768390]">4 search results</h2>
-				<a href="#" class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]">Search tips</a>
+				<button class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]">Search tips</button>
 			</div>
 
 			<div class="space-y-6">

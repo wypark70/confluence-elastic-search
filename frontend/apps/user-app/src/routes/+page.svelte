@@ -113,7 +113,7 @@
 						: '4 search results' // Mock count
 					}
 				</h2>
-				<a href="#" class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]">Search tips</a>
+				<button class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]">Search tips</button>
 			</div>
 
 			<!-- Search Results -->

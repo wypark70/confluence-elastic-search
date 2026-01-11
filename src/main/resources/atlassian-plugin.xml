@@ -69,9 +69,9 @@
     <!-- Legacy Dialog Action -->
     <xwork key="dialog-action" name="Dialog Action">
         <package name="dialog" extends="default" namespace="/plugins/elasticsearch">
-            <action name="dialog"
+            <action name="demo"
                 class="com.atsoft.confluence.plugin.elasticsearch.action.DialogAction">
-                <result name="success" type="velocity">/templates/dialog.vm</result>
+                <result name="success" type="velocity">/templates/demo-panel.vm</result>
             </action>
         </package>
     </xwork>
@@ -94,14 +94,8 @@
 
     <!-- Legacy Dialog Access (for backward compatibility) -->
     <web-item key="dialog-page-link" section="system.header/left" weight="39">
-        <label>다이얼로그 페이지</label>
-        <link>/plugins/elasticsearch/dialog.action</link>
-        <styleClass>aui-button</styleClass>
-    </web-item>
-
-    <web-item key="open-dialog-btn" section="system.header/left" weight="38">
-        <label key="다이얼로그 열기" />
-        <link linkId="btn-open-my-dialog">javascript:void(0)</link>
+        <label>Demo App</label>
+        <link>/plugins/elasticsearch/domo.action</link>
         <styleClass>aui-button</styleClass>
     </web-item>
 

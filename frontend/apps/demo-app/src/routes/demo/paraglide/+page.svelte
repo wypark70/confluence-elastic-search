@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { setLocale } from '$lib/paraglide/runtime';
-	import { m } from '$lib/paraglide/messages.js';
+	import { setLocale } from '@elastic-search/shared/i18n/runtime';
+	import { m } from '@elastic-search/shared/i18n/messages.js';
 </script>
 
 <h1>{m.hello_world({ name: 'SvelteKit User' })}</h1>

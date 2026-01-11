@@ -1,27 +1,20 @@
 {
 	"compilerOptions": {
-		"rootDir": "./src",
-		"outDir": "./dist",
-		"declaration": true,
-		"declarationMap": true,
-		"composite": true,
-		"incremental": true,
+		"target": "ES2020",
 		"module": "ESNext",
+		"lib": ["ES2020", "dom"],
 		"moduleResolution": "bundler",
+		"types": ["node"],
+		"strict": false,
 		"allowJs": true,
-		"checkJs": true,
+		"checkJs": false,
 		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
 		"skipLibCheck": true,
-		"sourceMap": true,
-		"strict": true
+		"forceConsistentCasingInFileNames": true,
+		"declaration": true,
+		"outDir": "dist",
+		"rootDir": "src"
 	},
-	"include": [
-		"src/**/*"
-	],
-	"exclude": [
-		"node_modules",
-		"dist"
-	]
+	"include": ["src/**/*"],
+	"exclude": ["node_modules/*", "dist/*", "src/lib/i18n/**/*"]
 }
