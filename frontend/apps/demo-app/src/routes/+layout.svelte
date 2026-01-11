@@ -20,7 +20,9 @@
 	<ThemeToggle />
 </div>
 
-{@render children()}
+<div id="demo-app-root">
+	{@render children()}
+</div>
 <div style="display:none">
 	{#each locales as locale}
 		<a href={localizeHref(page.url.pathname, { locale })}>

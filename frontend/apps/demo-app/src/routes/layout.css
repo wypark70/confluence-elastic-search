@@ -18,3 +18,25 @@
 	background-color: #1c2128;
 	color: #9fadbc;
 }
+
+/*
+  Confluence Global Style Override
+  Revert aggressive global resets (margin: 0; padding: 0) for standard elements within the app
+*/
+#demo-app-root {
+	/* Ensure block-level elements behave normally */
+	& address, & blockquote, & dl, & dd, & h1, & h2, & h3, & h4, & h5, & h6, & hr, & figure, & p, & pre {
+		margin: revert;
+		padding: revert;
+	}
+
+	& ol, & ul, & menu {
+		list-style: revert;
+		margin: revert;
+		padding: revert;
+	}
+
+  & table {
+    border-collapse: revert;
+  }
+}
