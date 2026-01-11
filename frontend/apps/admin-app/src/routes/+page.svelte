@@ -7,36 +7,36 @@
 	const adminSections = [
 		{
 			id: 'general',
-			title: 'General Settings',
-			description: 'Basic configuration options',
+			title: m.general_title,
+			description: m.general_description,
 			icon: Settings,
 			color: 'bg-blue-500 dark:bg-blue-600'
 		},
 		{
 			id: 'users',
-			title: 'User Management',
-			description: 'Manage user permissions and access',
+			title: m.users_title,
+			description: m.users_description,
 			icon: Users,
 			color: 'bg-green-500 dark:bg-green-600'
 		},
 		{
 			id: 'analytics',
-			title: 'Analytics',
-			description: 'Search analytics and usage statistics',
+			title: m.analytics_title,
+			description: m.analytics_description,
 			icon: BarChart,
 			color: 'bg-purple-500 dark:bg-purple-600'
 		},
 		{
 			id: 'index',
-			title: 'Index Management',
-			description: 'Configure search indexing options',
+			title: m.index_title,
+			description: m.index_description,
 			icon: Database,
 			color: 'bg-orange-500 dark:bg-orange-600'
 		},
 		{
 			id: 'security',
-			title: 'Security',
-			description: 'Security and compliance settings',
+			title: m.security_title,
+			description: m.security_description,
 			icon: Shield,
 			color: 'bg-red-500 dark:bg-red-600'
 		}
@@ -66,8 +66,9 @@
 			<nav class="p-4 space-y-1">
 				{#each adminSections as section}
 					<button
-						class="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {selectedSection === section.id 
-							? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300' 
+						class="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {selectedSection ===
+						section.id
+							? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
 							: 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'}"
 						onclick={() => selectSection(section.id)}
 					>
@@ -76,8 +77,8 @@
 								<section.icon size={16} class="text-white" />
 							</div>
 							<div class="flex-1 text-left">
-							<div class="font-medium">{m[section.id + '_title']()}</div>
-							<div class="text-xs text-gray-500 dark:text-gray-400">{m[section.id + '_description']()}</div>
+								<div class="font-medium">{section.title()}</div>
+								<div class="text-xs text-gray-500 dark:text-gray-400">{section.description()}</div>
 							</div>
 						</div>
 					</button>

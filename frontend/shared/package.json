@@ -11,9 +11,12 @@
 		"./utils/*": "./src/utils/*",
 		"./api/*": "./src/api/*",
 		"./stores/*": "./src/stores/*",
-		"./i18n/*": "./src/lib/i18n/*"
+		"./i18n/*": {
+			"types": "./dist/lib/i18n/*.d.ts",
+			"default": "./src/lib/i18n/*"
+		}
 	},
- "scripts": {
+	"scripts": {
 		"generate:i18n": "paraglide-js compile --project ./project.inlang --outdir ./src/lib/i18n",
 		"build": "pnpm generate:i18n && tsc",
 		"clean": "rm -rf dist"
@@ -21,7 +24,6 @@
 	"dependencies": {
 		"lucide-svelte": "^0.562.0"
 	},
-
 	"peerDependencies": {
 		"svelte": "^5.45.6"
 	},

@@ -85,7 +85,11 @@ importers:
         specifier: workspace:*
         version: link:../../shared
 
-  apps/demo-app: {}
+  apps/demo-app:
+    devDependencies:
+      '@elastic-search/shared':
+        specifier: workspace:*
+        version: link:../../shared
 
   apps/user-app: {}
 
