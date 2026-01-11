@@ -36,8 +36,10 @@ class ThemeStore {
 		if (browser) {
 			if (this.mode === 'dark') {
 				document.documentElement.classList.add('dark');
+				document.documentElement.dataset.colorMode = 'dark';
 			} else {
 				document.documentElement.classList.remove('dark');
+				document.documentElement.dataset.colorMode = 'light';
 			}
 		}
 	}

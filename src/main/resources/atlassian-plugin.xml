@@ -11,22 +11,7 @@
     <resource type="i18n" name="i18n" location="elastic-search" />
 
     <!-- Multi-SPA Web Resources -->
-    
-    <!-- User App Resources -->
-    <web-resource key="user-app-resources" name="User App">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource type="download" name="user-app/" location="/user-app/"/>
-        <context>elastic-search.user</context>
-        <context>atl.general</context>
-    </web-resource>
 
-    <!-- Admin App Resources -->
-    <web-resource key="admin-app-resources" name="Admin App">
-        <dependency>com.atlassian.auiplugin:aui-dialog2</dependency>
-        <resource type="download" name="admin-app/" location="/admin-app/"/>
-        <context>elastic-search.admin</context>
-        <context>atl.admin</context>
-    </web-resource>
 
     <!-- Legacy Resources (for backward compatibility) -->
     <web-resource key="elastic-search-resources" name="elastic-search Legacy Resources">
@@ -38,14 +23,6 @@
         <context>elastic-search</context>
     </web-resource>
 
-    <!-- Dialog Resources (Legacy) -->
-    <web-resource key="my-dialog-resources" name="Dialog Resources">
-        <dependency>com.atlassian.auiplugin:aui-dialog2</dependency>
-        <dependency>com.atlassian.auiplugin:aui-flag</dependency>
-        <resource type="download" name="dialog.js" location="/js/dialog.js" />
-        <context>atl.general</context>
-        <context>atl.admin</context>
-    </web-resource>
 
     <rest key="my-rest-api" path="/myplugin" version="1.0">
         <description>Provides JSON data</description>
@@ -55,47 +32,46 @@
     </rest>
 
     <!-- Multi-SPA Servlets -->
-    
+
     <!-- User App Servlet -->
-    <servlet key="user-app-servlet" name="User App Servlet" class="com.atsoft.confluence.plugin.elasticsearch.servlet.UserAppServlet">
+    <servlet key="user-app-servlet" name="User App Servlet"
+        class="com.atsoft.confluence.plugin.elasticsearch.servlet.UserAppServlet">
         <url-pattern>/user-app/*</url-pattern>
     </servlet>
-    
+
     <!-- Admin App Servlet -->
-    <servlet key="admin-app-servlet" name="Admin App Servlet" class="com.atsoft.confluence.plugin.elasticsearch.servlet.AdminAppServlet">
+    <servlet key="admin-app-servlet" name="Admin App Servlet"
+        class="com.atsoft.confluence.plugin.elasticsearch.servlet.AdminAppServlet">
         <url-pattern>/admin-app/*</url-pattern>
     </servlet>
 
-    <!-- Legacy Dialog Action -->
-    <xwork key="dialog-action" name="Dialog Action">
-        <package name="dialog" extends="default" namespace="/plugins/elasticsearch">
-            <action name="demo"
-                class="com.atsoft.confluence.plugin.elasticsearch.action.DialogAction">
-                <result name="success" type="velocity">/templates/demo-panel.vm</result>
-            </action>
-        </package>
-    </xwork>
+    <!-- Demo App Servlet -->
+    <servlet key="demo-app-servlet" name="Demo App Servlet"
+        class="com.atsoft.confluence.plugin.elasticsearch.servlet.DemoAppServlet">
+        <url-pattern>/demo-app/*</url-pattern>
+    </servlet>
+
 
     <!-- Multi-SPA Web Items -->
-    
+
     <!-- User App Access -->
     <web-item key="user-search-link" section="system.header/left" weight="40">
-        <label key="user.search.title">Elastic Search</label>
-        <link>/plugins/servlet/user-app</link>
+        <label>Elastic Search</label>
+        <link>/plugins/servlet/user-app/</link>
         <styleClass>aui-button</styleClass>
     </web-item>
 
     <!-- Admin App Access -->
     <web-item key="admin-config-link" section="system.admin/config" weight="100">
-        <label key="admin.config.title">Elastic Search Config</label>
-        <link>/plugins/servlet/admin-app</link>
+        <label>Elastic Search Config</label>
+        <link>/plugins/servlet/admin-app/</link>
         <styleClass>aui-button</styleClass>
     </web-item>
 
-    <!-- Legacy Dialog Access (for backward compatibility) -->
-    <web-item key="dialog-page-link" section="system.header/left" weight="39">
+    <!-- Demo App Access -->
+    <web-item key="demo-app-link" section="system.header/left" weight="39">
         <label>Demo App</label>
-        <link>/plugins/elasticsearch/domo.action</link>
+        <link>/plugins/servlet/demo-app/</link>
         <styleClass>aui-button</styleClass>
     </web-item>
 

@@ -1,12 +1,13 @@
 <section id="my-custom-dialog" class="aui-dialog2 aui-dialog2-medium" aria-hidden="true" role="dialog">
     <header class="aui-dialog2-header">
-        <h2 class="aui-dialog2-header-main">사용자 의견 보내기</h2>
+        <h2 class="aui-dialog2-header-main">$dialogTitle</h2>
         <a class="aui-dialog2-header-close">
             <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span>
         </a>
     </header>
 
     <div class="aui-dialog2-content">
+        <p>$message</p>
         <form class="aui">
             <div class="field-group">
                 <label for="feedback-text">의견 내용</label>

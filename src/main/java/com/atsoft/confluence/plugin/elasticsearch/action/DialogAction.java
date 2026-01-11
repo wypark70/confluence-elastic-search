@@ -1,10 +1,8 @@
 package com.atsoft.confluence.plugin.elasticsearch.action;
 
 import com.atlassian.confluence.core.ConfluenceActionSupport;
-import com.atlassian.confluence.renderer.template.TemplateRenderer;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-
-import javax.inject.Inject;
+import com.atlassian.xwork.HttpMethod;
+import com.atlassian.xwork.PermittedMethods;
 
 /**
  * Confluence Action 예제
@@ -12,15 +10,12 @@ import javax.inject.Inject;
  */
 public class DialogAction extends ConfluenceActionSupport {
 
-    private final TemplateRenderer templateRenderer;
-
     // 다이얼로그에 전달할 데이터
     private String dialogTitle;
     private String message;
 
-    @Inject
-    public DialogAction(@ComponentImport TemplateRenderer templateRenderer) {
-        this.templateRenderer = templateRenderer;
+    public DialogAction() {
+        // 기본 생성자
     }
 
     /**
@@ -28,6 +23,7 @@ public class DialogAction extends ConfluenceActionSupport {
      * SUCCESS를 반환하면 dialog.vm 템플릿이 렌더링됨
      */
     @Override
+    @PermittedMethods({HttpMethod.GET})
     public String execute() throws Exception {
         // 데이터 준비
         this.dialogTitle = "다이얼로그 제목";
@@ -45,7 +41,5 @@ public class DialogAction extends ConfluenceActionSupport {
         return message;
     }
 
-    public TemplateRenderer getTemplateRenderer() {
-        return templateRenderer;
-    }
+
 }

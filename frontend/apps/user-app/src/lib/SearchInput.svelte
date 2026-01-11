@@ -12,22 +12,14 @@
 	}
 
 	let { 
-		value = '', 
+		value = $bindable(''), 
 		placeholder = 'Search...',
 		loading = false,
 		onSearch,
 		onInput 
 	}: Props = $props();
 
-	let inputValue = $state();
 	let inputElement: HTMLInputElement;
-
-	// Sync with props changes
-	$effect(() => {
-		if (inputValue !== value) {
-			inputValue = value;
-		}
-	});
 
 	// Debounced search
 	const debouncedSearch = debounce((query: string) => {
@@ -40,23 +32,23 @@
 
 	function handleInput(event: Event) {
 		const target = event.target as HTMLInputElement;
-		inputValue = target.value;
-		onInput?.(inputValue);
-		debouncedSearch(inputValue);
+		value = target.value;
+		onInput?.(value);
+		debouncedSearch(value);
 	}
 
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Enter') {
-			const validation = validateSearchQuery(inputValue);
+			const validation = validateSearchQuery(value);
 			if (validation.isValid) {
-				const sanitizedQuery = sanitizeSearchQuery(inputValue);
+				const sanitizedQuery = sanitizeSearchQuery(value);
 				onSearch?.(sanitizedQuery);
 			}
 		}
 	}
 
 	function handleClear() {
-		inputValue = '';
+		value = '';
 		onInput?.('');
 		onSearch?.('');
 		inputElement?.focus();
@@ -76,14 +68,14 @@
 	<input
 		bind:this={inputElement}
 		type="text"
-		value={inputValue}
+		value={value}
 		{placeholder}
 		class="w-full border-none bg-transparent text-2xl text-gray-900 placeholder-gray-400 focus:ring-0 dark:text-[#c9d1d9] dark:placeholder-[#484f58]"
 		oninput={handleInput}
 		onkeydown={handleKeydown}
 	/>
 	
-	{#if inputValue}
+	{#if value}
 		<button
 			onclick={handleClear}
 			class="absolute top-1/2 right-0 -translate-y-1/2 text-gray-500 dark:text-[#c9d1d9] p-1 hover:text-gray-700 dark:hover:text-[#c9d1d9]"

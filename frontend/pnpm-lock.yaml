@@ -79,7 +79,11 @@ importers:
         specifier: ^2.1.9
         version: 2.1.9(@types/node@20.19.28)(lightningcss@1.30.2)
 
-  apps/admin-app: {}
+  apps/admin-app:
+    dependencies:
+      '@elastic-search/shared':
+        specifier: workspace:*
+        version: link:../../shared
 
   apps/demo-app: {}
 

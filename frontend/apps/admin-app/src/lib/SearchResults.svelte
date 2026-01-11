@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Home, FileText } from 'lucide-svelte';
-	import type { SearchResult } from '../types/search';
-	import { highlightText } from '../utils/formatting';
+	import type { SearchResult } from './types/search';
+	import { highlightText } from './utils/formatting';
 
 	interface Props {
 		results: SearchResult[];
@@ -25,11 +25,12 @@
 
 <div class="space-y-6">
 	{#each results as result}
+		{@const Icon = getIcon(result.type)}
 		<div class="group flex gap-4">
 			<!-- Icon -->
 			<div class="mt-1 flex-shrink-0">
 				<div class="flex h-8 w-8 items-center justify-center rounded {getIconClass(result.type)}">
-					<svelte:component this={getIcon(result.type)} size={18} class="text-white" />
+					<Icon size={18} class="text-white" />
 				</div>
 			</div>
 
