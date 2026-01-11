@@ -1,4 +1,4 @@
-package com.atsoft.confluence.plugin.elasticsearch.servlet;
+package com.atsoft.confluence.plugin.elasticsearch.helper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

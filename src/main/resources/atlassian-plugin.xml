@@ -10,28 +10,12 @@
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="elastic-search" />
 
-    <!-- Multi-SPA Web Resources -->
-
-
-    <!-- Legacy Resources (for backward compatibility) -->
-    <web-resource key="elastic-search-resources" name="elastic-search Legacy Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <dependency>elastic-search:user-app-resources</dependency>
-        <resource type="download" name="elastic-search.css" location="/css/elastic-search.css" />
-        <resource type="download" name="elastic-search.js" location="/js/elastic-search.js" />
-        <resource type="download" name="images/" location="/images" />
-        <context>elastic-search</context>
-    </web-resource>
-
-
     <rest key="my-rest-api" path="/myplugin" version="1.0">
         <description>Provides JSON data</description>
         <package>com.atsoft.confluence.plugin.elasticsearch.rest</package>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
     </rest>
-
-    <!-- Multi-SPA Servlets -->
 
     <!-- User App Servlet -->
     <servlet key="user-app-servlet" name="User App Servlet"
@@ -51,8 +35,6 @@
         <url-pattern>/demo-app/*</url-pattern>
     </servlet>
 
-
-    <!-- Multi-SPA Web Items -->
 
     <!-- User App Access -->
     <web-item key="user-search-link" section="system.header/left" weight="40">
