@@ -11,9 +11,6 @@ importers:
       '@elastic-search/shared':
         specifier: workspace:*
         version: link:shared
-      lucide-svelte:
-        specifier: ^0.562.0
-        version: 0.562.0(svelte@5.46.1)
     devDependencies:
       '@inlang/paraglide-js':
         specifier: ^2.7.2
@@ -90,18 +87,27 @@ importers:
       '@elastic-search/shared':
         specifier: workspace:*
         version: link:../../shared
+      lucide-svelte:
+        specifier: ^0.562.0
+        version: 0.562.0(svelte@5.46.1)
 
   apps/demo-app:
-    devDependencies:
+    dependencies:
       '@elastic-search/shared':
         specifier: workspace:*
         version: link:../../shared
+      lucide-svelte:
+        specifier: ^0.562.0
+        version: 0.562.0(svelte@5.46.1)
 
   apps/user-app:
     dependencies:
       '@elastic-search/shared':
         specifier: workspace:*
         version: link:../../shared
+      lucide-svelte:
+        specifier: ^0.562.0
+        version: 0.562.0(svelte@5.46.1)
 
   shared:
     dependencies:
