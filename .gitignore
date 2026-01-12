@@ -2,3 +2,5 @@
 
 target
 docker/data
+
+elastic-search.iml

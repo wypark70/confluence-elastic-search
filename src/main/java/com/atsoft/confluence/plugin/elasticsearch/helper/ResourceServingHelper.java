@@ -1,6 +1,5 @@
 package com.atsoft.confluence.plugin.elasticsearch.helper;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -48,11 +47,10 @@ public class ResourceServingHelper {
      *                    이 경로는 `src/main/resources` 아래의 실제 폴더 구조와 일치해야 합니다.
      * @param decorator   적용할 Confluence 데코레이터 이름 (예: `atl.general`, `atl.admin`).
      *                    이 값은 `index.html`의 `<meta name="decorator">` 태그에 주입됩니다.
-     * @throws ServletException 서블릿 처리 중 오류가 발생한 경우
      * @throws IOException      입출력 처리 중 오류가 발생한 경우
      */
     public static void serveResource(HttpServletRequest req, HttpServletResponse resp, String appBasePath,
-            String decorator) throws ServletException, IOException {
+            String decorator) throws IOException {
 
         String pathInfo = req.getPathInfo();
 
@@ -66,7 +64,7 @@ public class ResourceServingHelper {
         // 2. 리소스 스트림 확보
         // 요청된 경로(pathInfo)를 기반으로 실제 리소스 파일의 InputStream을 찾습니다.
         String resourcePath = appBasePath + pathInfo;
-        InputStream resourceStream = resolveResourceStream(resourcePath, pathInfo);
+        InputStream resourceStream = resolveResourceStream(resourcePath);
 
         if (resourceStream == null) {
             // SPA(Single Page Application) 라우팅 지원:
@@ -116,15 +114,14 @@ public class ResourceServingHelper {
      * 주어진 리소스 경로에 해당하는 InputStream을 클래스패스에서 찾아 반환합니다.
      *
      * @param resourcePath 클래스패스 상의 리소스 전체 경로
-     * @param pathInfo     요청된 원본 PathInfo (로깅이나 추가 처리에 필요할 수 있음)
      * @return 리소스의 InputStream, 찾지 못한 경우 null
      */
-    private static InputStream resolveResourceStream(String resourcePath, String pathInfo) {
+    private static InputStream resolveResourceStream(String resourcePath) {
         return ResourceServingHelper.class.getResourceAsStream(resourcePath);
     }
 
     /**
-     * 응답 객체에 적절한 `Content-Type`과 `Cache-Control` 헤더를 설정합니다.
+     * 응답 객체에 적절한 `Content-Type `Cache-Control` 헤더를 설정합니다.
      *
      * @param resp         헤더를 설정할 HttpServletResponse 객체
      * @param resourcePath 리소스 파일 경로 (MIME 타입 추론용)
@@ -148,7 +145,7 @@ public class ResourceServingHelper {
 
     /**
      * 파일 이름을 기반으로 MIME 타입을 추론합니다.
-     * Java의 기본 `guessContentTypeFromName`이 실패할 경우를 대비해
+     * Java의 기본 `guessContentTypeFromName 실패할 경우를 대비해
      * , 자주 사용되는 웹 리소스 확장자에 대한 폴백 로직을 제공합니다.
      *
      * @param resourcePath 리소스 파일 경로
@@ -228,7 +225,7 @@ public class ResourceServingHelper {
      * @return 스트림의 전체 문자열 내용
      */
     private static String readStreamToString(InputStream inputStream) {
-        try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8.name())) {
+        try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
             return scanner.useDelimiter("\\A").next();
         }
     }
