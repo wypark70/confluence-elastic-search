@@ -60,7 +60,7 @@
             <artifactId>spring-context</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- Servlet API dependencies -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -147,7 +147,7 @@
 
                 </configuration>
             </plugin>
-            
+
             <!-- Frontend Maven Plugin for Multi-SPA Build -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -186,7 +186,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- Copy Frontend Build Resources -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -194,54 +194,20 @@
                 <version>3.3.1</version>
                 <executions>
                     <execution>
-                        <id>copy-user-app</id>
+                        <id>copy-frontend-assets</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/user-app</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.basedir}/frontend/dist/user-app</directory>
+                                    <directory>${project.basedir}/frontend/dist</directory>
                                     <includes>
-                                        <include>**/*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                     <execution>
-                        <id>copy-admin-app</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/admin-app</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/frontend/dist/admin-app</directory>
-                                    <includes>
-                                        <include>**/*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-demo-app</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/demo-app</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/frontend/dist/demo-app</directory>
-                                    <includes>
-                                        <include>**/*</include>
+                                        <include>user-app/**/*</include>
+                                        <include>admin-app/**/*</include>
+                                        <include>demo-app/**/*</include>
                                     </includes>
                                 </resource>
                             </resources>
@@ -264,7 +230,7 @@
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
-        
+
         <!-- Frontend build properties -->
         <frontend.maven.plugin.version>1.15.0</frontend.maven.plugin.version>
         <node.version>18.19.0</node.version>
