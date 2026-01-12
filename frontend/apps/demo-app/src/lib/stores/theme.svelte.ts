@@ -10,13 +10,37 @@ class ThemeStore {
 
 	init() {
 		if (browser) {
-			const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
-			if (stored) {
-				this.mode = stored;
-			} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				this.mode = 'dark';
+			const colorMode = document.documentElement.dataset.colorMode;
+			if (colorMode) {
+				this.mode = colorMode as 'light' | 'dark';
+			} else {
+				const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+				if (stored) {
+					this.mode = stored;
+				} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					this.mode = 'dark';
+				}
 			}
 			this.apply();
+
+			const observer = new MutationObserver((mutations) => {
+				for (const mutation of mutations) {
+					if (mutation.attributeName === 'data-color-mode') {
+						const newMode = document.documentElement.dataset.colorMode as 'light' | 'dark';
+						if (newMode === 'light' || newMode === 'dark') {
+							if (this.mode !== newMode) {
+								this.mode = newMode;
+								this.apply();
+							}
+						}
+					}
+				}
+			});
+
+			observer.observe(document.documentElement, {
+				attributes: true,
+				attributeFilter: ['data-color-mode']
+			});
 		}
 	}
 
