@@ -9,8 +9,7 @@
 		LayoutGrid,
 		FileText,
 		Home,
-		ChevronDown,
-
+		ChevronDown
 	} from 'lucide-svelte';
 
 	// Mock data to match the screenshot exactly
@@ -72,23 +71,32 @@
 		let highlighted = text;
 		queries.forEach((q) => {
 			const regex = new RegExp(`(${q})`, 'gi');
-			highlighted = highlighted.replace(regex, '<span class="font-bold text-blue-600 dark:text-white">$1</span>');
+			highlighted = highlighted.replace(
+				regex,
+				'<span class="font-bold text-blue-600 dark:text-white">$1</span>'
+			);
 		});
 		return highlighted;
 	}
 </script>
 
-<div class="flex min-h-screen flex-col bg-white font-sans text-gray-900 dark:bg-[#1c2128] dark:text-[#9fadbc]">
+<div
+	class="flex min-h-screen flex-col bg-white font-sans text-gray-900 dark:bg-[#1c2128] dark:text-[#9fadbc]"
+>
 	<div class="flex flex-1 overflow-hidden">
 		<!-- Sidebar -->
 		<div class="flex w-64 flex-col gap-4 border-r border-transparent p-8">
 			<!-- Border transparent for now, maybe layout specific -->
 
-			<div class="mb-2 text-xs font-bold tracking-wider text-gray-500 uppercase dark:text-[#768390]">Filter By</div>
+			<div
+				class="mb-2 text-xs font-bold tracking-wider text-gray-500 uppercase dark:text-[#768390]"
+			>
+				Filter By
+			</div>
 
 			{#each filters as filter}
 				<button
-					class="group flex w-full items-center justify-between rounded p-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-[#2d333b]"
+					class="group flex w-full items-center justify-between rounded p-2 text-left transition-colors hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-[#2d333b]"
 				>
 					<div class="flex items-center gap-3 text-gray-700 dark:text-[#c9d1d9]">
 						<filter.icon
@@ -102,7 +110,10 @@
 			{/each}
 
 			<div class="mt-auto pt-4">
-				<button class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]">Advanced search</button>
+				<button
+					class="text-sm text-blue-600 hover:underline dark:bg-gray-800 dark:text-[#58a6ff] dark:hover:bg-gray-700"
+					>Advanced search</button
+				>
 			</div>
 		</div>
 
@@ -117,7 +128,9 @@
 						class="w-full border-none bg-transparent text-2xl text-gray-900 placeholder-gray-400 focus:ring-0 dark:text-[#c9d1d9] dark:placeholder-[#484f58]"
 						placeholder="Search"
 					/>
-					<button class="absolute top-1/2 right-0 -translate-y-1/2 text-gray-500 dark:text-[#c9d1d9]">
+					<button
+						class="absolute top-1/2 right-0 -translate-y-1/2 text-gray-500 dark:bg-gray-800 dark:text-[#c9d1d9] dark:hover:bg-gray-700"
+					>
 						<X size={24} />
 					</button>
 					<div class="absolute bottom-0 left-0 h-[2px] w-full bg-blue-500 dark:bg-[#58a6ff]"></div>
@@ -126,7 +139,10 @@
 
 			<div class="mb-6 flex items-end justify-between">
 				<h2 class="text-lg text-gray-600 dark:text-[#768390]">4 search results</h2>
-				<button class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]">Search tips</button>
+				<button
+					class="text-sm text-blue-600 hover:underline dark:bg-gray-800 dark:text-[#58a6ff] dark:hover:bg-gray-700"
+					>Search tips</button
+				>
 			</div>
 
 			<div class="space-y-6">
@@ -135,11 +151,15 @@
 						<!-- Icon -->
 						<div class="mt-1 flex-shrink-0">
 							{#if result.type === 'home'}
-								<div class="flex h-8 w-8 items-center justify-center rounded bg-yellow-600 dark:bg-[#d29922]">
+								<div
+									class="flex h-8 w-8 items-center justify-center rounded bg-yellow-600 dark:bg-[#d29922]"
+								>
 									<Home size={18} class="text-white" />
 								</div>
 							{:else}
-								<div class="flex h-8 w-8 items-center justify-center rounded bg-blue-600 dark:bg-[#0969da]">
+								<div
+									class="flex h-8 w-8 items-center justify-center rounded bg-blue-600 dark:bg-[#0969da]"
+								>
 									<FileText size={18} class="text-white" />
 								</div>
 							{/if}
@@ -167,5 +187,3 @@
 		</div>
 	</div>
 </div>
-
-
