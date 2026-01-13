@@ -1,3 +1,5 @@
+import descriptions from './SampleDescriptions';
+
 const baseResults = generateRandomIssues('', 1000);
 
 function getSampleResponse(query = '', currentPage = 1) {
@@ -9,7 +11,7 @@ function getSampleResponse(query = '', currentPage = 1) {
 		);
 	});
 	const totalResults = searchResults.length;
-	const pageSize = 5;
+	const pageSize = 10;
 	const totalPages = Math.ceil(totalResults / pageSize);
 	const sliceResults = searchResults.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 	const results = sliceResults.map((issue) => {
@@ -139,25 +141,7 @@ function generateRandomDescription(query = '') {
 
 	// 3. 마크다운 템플릿 조합
 	// 실제 깃허브나 지라(Jira) 템플릿과 유사하게 구성
-	const description = `
-## 🧐 개요 (Overview)
-${pick(contexts)}
-${query}
-
-## 👣 재현 경로 (Steps to Reproduce)
-${getRandomSteps()}
-
-## 🤔 기대 결과 (Expected Behavior)
-- ${pick(expectations)}
-
-## 😱 실제 결과 (Actual Behavior)
-- ${pick(realities)}
-
-## 💻 환경 (Environment)
-- **OS**: ${pick(osList)}
-- **Browser**: ${pick(browserList)}
-- **Version**: v${Math.floor(Math.random() * 5)}.${Math.floor(Math.random() * 10)}.0
-  `.trim();
+	const description = descriptions[Math.floor(Math.random() * descriptions.length)];
 
 	return description;
 }
