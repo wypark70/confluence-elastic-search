@@ -29,10 +29,8 @@ export class SearchApiClient {
 	}
 
 	async getRecentSearches(userId?: string): Promise<SearchResult[]> {
-		const url = userId 
-			? `${this.baseUrl}/recent/${userId}`
-			: `${this.baseUrl}/recent`;
-		
+		const url = userId ? `${this.baseUrl}/recent/${userId}` : `${this.baseUrl}/recent`;
+
 		const response = await fetch(url);
 		if (!response.ok) {
 			throw new Error(`Recent searches failed: ${response.statusText}`);

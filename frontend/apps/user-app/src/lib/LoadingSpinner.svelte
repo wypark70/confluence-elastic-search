@@ -13,7 +13,7 @@
 	};
 </script>
 
-<div 
+<div
 	class="{sizeClasses[size]} animate-spin rounded-full {color} border-t-transparent"
 	aria-label="Loading..."
 ></div>

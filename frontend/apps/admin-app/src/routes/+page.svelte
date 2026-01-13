@@ -49,7 +49,9 @@
 
 <div class="min-h-screen bg-gray-50 dark:bg-[#0d1117]">
 	<!-- Header -->
-	<header class="bg-white shadow-sm border-b border-gray-200 dark:bg-[#161b22] dark:border-gray-800">
+	<header
+		class="border-b border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-[#161b22]"
+	>
 		<div class="px-6 py-4">
 			<h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
 				{m.elastic_search_configuration()}
@@ -62,11 +64,13 @@
 
 	<div class="flex">
 		<!-- Sidebar -->
-		<aside class="w-64 min-h-screen bg-white border-r border-gray-200 dark:bg-[#161b22] dark:border-gray-800">
-			<nav class="p-4 space-y-1">
+		<aside
+			class="min-h-screen w-64 border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-[#161b22]"
+		>
+			<nav class="space-y-1 p-4">
 				{#each adminSections as section}
 					<button
-						class="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {selectedSection ===
+						class="flex w-full items-center rounded-md px-3 py-2 text-sm font-medium transition-colors {selectedSection ===
 						section.id
 							? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
 							: 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'}"
@@ -90,36 +94,42 @@
 		<main class="flex-1 p-6">
 			{#if selectedSection === 'general'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.general_title()}</h2>
-					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
+					<h2 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">
+						{m.general_title()}
+					</h2>
+					<div class="rounded-lg bg-white p-6 shadow dark:bg-[#161b22]">
 						<p>{m.general_description()}</p>
 					</div>
 				</section>
 			{:else if selectedSection === 'users'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.users_title()}</h2>
-					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
+					<h2 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">{m.users_title()}</h2>
+					<div class="rounded-lg bg-white p-6 shadow dark:bg-[#161b22]">
 						<p>{m.users_description()}</p>
 					</div>
 				</section>
 			{:else if selectedSection === 'analytics'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.analytics_title()}</h2>
-					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
+					<h2 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">
+						{m.analytics_title()}
+					</h2>
+					<div class="rounded-lg bg-white p-6 shadow dark:bg-[#161b22]">
 						<p>{m.analytics_description()}</p>
 					</div>
 				</section>
 			{:else if selectedSection === 'index'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.index_title()}</h2>
-					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
+					<h2 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">{m.index_title()}</h2>
+					<div class="rounded-lg bg-white p-6 shadow dark:bg-[#161b22]">
 						<p>{m.index_description()}</p>
 					</div>
 				</section>
 			{:else if selectedSection === 'security'}
 				<section>
-					<h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{m.security_title()}</h2>
-					<div class="bg-white dark:bg-[#161b22] rounded-lg shadow p-6">
+					<h2 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">
+						{m.security_title()}
+					</h2>
+					<div class="rounded-lg bg-white p-6 shadow dark:bg-[#161b22]">
 						<p>{m.security_description()}</p>
 					</div>
 				</section>

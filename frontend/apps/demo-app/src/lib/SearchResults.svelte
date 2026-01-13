@@ -57,7 +57,9 @@
 
 			<!-- Content -->
 			<div class="flex-1">
-				<h3 class="cursor-pointer text-lg leading-snug font-medium text-blue-600 hover:underline dark:text-[#58a6ff]">
+				<h3
+					class="cursor-pointer text-lg leading-snug font-medium text-blue-600 hover:underline dark:text-[#58a6ff]"
+				>
 					{result.title}
 				</h3>
 				<div class="mt-0.5 mb-1 text-xs text-gray-500 dark:text-[#768390]">

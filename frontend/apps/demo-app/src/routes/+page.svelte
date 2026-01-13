@@ -3,15 +3,7 @@
 	import SearchResults from '../lib/SearchResults.svelte';
 	import LoadingSpinner from '../lib/LoadingSpinner.svelte';
 	import Pagination from '../lib/Pagination.svelte';
-	import {
-		Folder,
-		User,
-		Image,
-		Calendar,
-		Tag,
-		LayoutGrid,
-		ChevronDown
-	} from 'lucide-svelte';
+	import { Folder, User, Image, Calendar, Tag, LayoutGrid, ChevronDown } from 'lucide-svelte';
 	interface SearchResult {
 		id: number;
 		type: 'page' | 'home' | 'blog' | 'attachment';
@@ -88,7 +80,7 @@
 						space: 'Demonstration Space',
 						date: 'Mar 05, 2024',
 						snippet:
-								"Let's start with the editor. You'll use the Confluence editor to create and edit pages. You can type in the editor as you would in any document, apply...",
+							"Let's start with the editor. You'll use the Confluence editor to create and edit pages. You can type in the editor as you would in any document, apply...",
 						highlightValues: [query]
 					},
 					{
@@ -98,7 +90,7 @@
 						space: 'Demonstration Space',
 						date: 'Mar 05, 2024',
 						snippet:
-								'welcome.png With Confluence it is easy to create, edit and share content with your team. Choose a topic below to start learning how. What is...',
+							'welcome.png With Confluence it is easy to create, edit and share content with your team. Choose a topic below to start learning how. What is...',
 						highlightValues: [query]
 					}
 				],
@@ -135,19 +127,19 @@
 			<!-- Border transparent for now, maybe layout specific -->
 
 			<div
-					class="mb-2 text-xs font-bold tracking-wider text-gray-500 uppercase dark:text-[#768390]"
+				class="mb-2 text-xs font-bold tracking-wider text-gray-500 uppercase dark:text-[#768390]"
 			>
 				Filter By
 			</div>
 
 			{#each filters as filter}
 				<button
-						class="group flex w-full items-center justify-between rounded p-2 text-left transition-colors hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-[#2d333b]"
+					class="group flex w-full items-center justify-between rounded p-2 text-left transition-colors hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-[#2d333b]"
 				>
 					<div class="flex items-center gap-3 text-gray-700 dark:text-[#c9d1d9]">
 						<filter.icon
-								size={18}
-								class="text-gray-500 group-hover:text-gray-900 dark:text-[#768390] dark:group-hover:text-[#c9d1d9]"
+							size={18}
+							class="text-gray-500 group-hover:text-gray-900 dark:text-[#768390] dark:group-hover:text-[#c9d1d9]"
 						/>
 						<span class="text-sm">{filter.label}</span>
 					</div>
@@ -157,8 +149,8 @@
 
 			<div class="mt-auto pt-4">
 				<button
-						class="text-sm text-blue-600 hover:underline dark:bg-gray-800 dark:text-[#58a6ff] dark:hover:bg-gray-700"
-				>Advanced search</button
+					class="text-sm text-blue-600 hover:underline dark:bg-gray-800 dark:text-[#58a6ff] dark:hover:bg-gray-700"
+					>Advanced search</button
 				>
 			</div>
 		</div>
@@ -179,7 +171,7 @@
 						? `${totalResults} search result${totalResults !== 1 ? 's' : ''} (page ${currentPage} of ${totalPages})`
 						: 'Search for content'}
 				</h2>
-				<button class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]"
+				<button class="text-sm text-blue-600 hover:underline dark:bg-gray-800 dark:text-[#58a6ff]"
 					>Search tips</button
 				>
 			</div>

@@ -12,7 +12,7 @@
 	<div class="mt-8 flex justify-center">
 		<div class="flex space-x-2">
 			<button
-				class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:border-[#2c333a] dark:hover:bg-[#21262d]"
+				class="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#2c333a] dark:bg-gray-700 dark:hover:bg-[#21262d]"
 				disabled={currentPage === 1}
 				onclick={() => onPageChange(currentPage - 1)}
 			>
@@ -22,7 +22,11 @@
 			{#each Array(totalPages) as _, i}
 				{#if i + 1 === currentPage || i + 1 === currentPage - 1 || i + 1 === currentPage + 1 || i + 1 === 1 || i + 1 === totalPages}
 					<button
-						class="px-3 py-2 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed {i + 1 === currentPage ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-700 dark:border-[#2c333a] dark:hover:bg-[#21262d]'}"
+						class="rounded-md border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 {i +
+							1 ===
+						currentPage
+							? 'border-blue-600 bg-blue-600 text-white'
+							: 'border-gray-300 hover:bg-gray-50 dark:border-[#2c333a] dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-[#21262d]'}"
 						disabled={i + 1 === currentPage}
 						onclick={() => onPageChange(i + 1)}
 					>
@@ -34,7 +38,7 @@
 			{/each}
 
 			<button
-				class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:border-[#2c333a] dark:hover:bg-[#21262d]"
+				class="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#2c333a] dark:bg-gray-700 dark:hover:bg-[#21262d]"
 				disabled={currentPage === totalPages}
 				onclick={() => onPageChange(currentPage + 1)}
 			>
