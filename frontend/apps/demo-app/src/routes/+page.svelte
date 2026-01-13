@@ -73,7 +73,7 @@
 				totalPages = 0;
 			}*/
 
-			const data: SearchResponse = getSampleResponse(query);
+			const data: SearchResponse = getSampleResponse(query, currentPage);
 			searchResults = data.results;
 			totalResults = data.totalResults;
 			totalPages = data.totalPages;

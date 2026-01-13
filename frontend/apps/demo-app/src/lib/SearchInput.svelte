@@ -28,7 +28,7 @@
 			const sanitizedQuery = sanitizeSearchQuery(query);
 			onSearch?.(sanitizedQuery);
 		}
-	}, 300);
+	}, 700);
 
 	function handleInput(event: Event) {
 		const target = event.target as HTMLInputElement;

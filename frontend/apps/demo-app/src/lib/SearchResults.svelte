@@ -3,7 +3,7 @@
 
 	interface SearchResult {
 		id: number;
-		type: 'page' | 'home' | 'blog' | 'attachment';
+		type: string;
 		title: string;
 		space: string;
 		date: string;
