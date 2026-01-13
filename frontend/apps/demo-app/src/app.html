@@ -1,12 +1,17 @@
 <!doctype html>
-<html lang="%paraglide.lang%">
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
+
+		<meta name="viewport" content="width=device-width" />
+		<meta name="theme-color" content="#ffffff" />
+
 		%sveltekit.head%
+
+		<!-- Confluence integration -->
+		<meta name="decorator" content="atl.general" />
 	</head>
-	<body data-sveltekit-preload-data="hover">
+	<body data-sveltekit-preload-data="hover" class="bg-white dark:bg-[#0d1117]">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
