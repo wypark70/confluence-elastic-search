@@ -1,5 +1,5 @@
 {
-	"name": "elastic-search-frontend",
+	"name": "elastic-search-frontend-svelte",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",

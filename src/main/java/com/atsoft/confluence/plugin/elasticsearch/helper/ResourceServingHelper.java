@@ -43,11 +43,11 @@ public class ResourceServingHelper {
      * 
      * @param req         HttpServletRequest 객체 (요청 경로 정보를 얻기 위함)
      * @param resp        HttpServletResponse 객체 (응답을 보내기 위함)
-     * @param appBasePath 리소스가 위치한 클래스패스 상의 기본 경로 (예: `/frontend/user-app`).
+     * @param appBasePath 리소스가 위치한 클래스패스 상의 기본 경로 (예: `/frontend-svelte/user-app`).
      *                    이 경로는 `src/main/resources` 아래의 실제 폴더 구조와 일치해야 합니다.
      * @param decorator   적용할 Confluence 데코레이터 이름 (예: `atl.general`, `atl.admin`).
      *                    이 값은 `index.html`의 `<meta name="decorator">` 태그에 주입됩니다.
-     * @throws IOException      입출력 처리 중 오류가 발생한 경우
+     * @throws IOException 입출력 처리 중 오류가 발생한 경우
      */
     public static void serveResource(HttpServletRequest req, HttpServletResponse resp, String appBasePath,
             String decorator) throws IOException {

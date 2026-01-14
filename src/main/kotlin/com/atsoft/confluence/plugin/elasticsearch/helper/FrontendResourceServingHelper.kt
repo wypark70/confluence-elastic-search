@@ -66,7 +66,7 @@ object FrontendResourceServingHelper {
      *
      * @param req         요청 정보를 담고 있는 [HttpServletRequest] 객체
      * @param resp        응답을 처리할 [HttpServletResponse] 객체
-     * @param appBasePath 클래스패스 상에서 정적 리소스가 위치한 루트 경로 (예: `/frontend/app`)
+     * @param appBasePath 클래스패스 상에서 정적 리소스가 위치한 루트 경로 (예: `/frontend-svelte/app`)
      * @param decorator   `index.html`에 주입할 Confluence 데코레이터 이름 (예: `atl.general`)
      * @throws ServletException 서블릿 처리 중 예외 발생 시
      * @throws IOException      입출력 처리 중 예외 발생 시

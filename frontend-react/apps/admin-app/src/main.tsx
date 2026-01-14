@@ -1,0 +1,18 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import '@atlaskit/css-reset';
+import { setGlobalTheme } from '@atlaskit/tokens';
+
+setGlobalTheme({
+  light: 'light',
+  dark: 'dark',
+});
+
+import './index.css'
+import App from './App.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
