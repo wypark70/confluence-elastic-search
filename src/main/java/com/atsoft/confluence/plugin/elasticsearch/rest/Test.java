@@ -8,7 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieManager;
@@ -28,46 +28,39 @@ public class PerfectProxyResource {
 
     private static final Logger log = LoggerFactory.getLogger(PerfectProxyResource.class);
     private static final String JIRA_BASE_URL = "https://your-jira-instance.com";
-    // ADMIN_TOKEN 제거 -> 사용자 토큰을 직접 사용
-
     private static final String LABELIT_PATH = "/rest/rabelit/1.0/items";
     private static final String LABELIT_BASE_URL = JIRA_BASE_URL + LABELIT_PATH;
 
-    // [전략 1] Static 유지 (메모리 효율성)
-    private static final HttpClient httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_1_1) // HTTP/1.1 고정 (멀티플렉싱 방지)
-            .connectTimeout(Duration.ofSeconds(5))
-            .followRedirects(HttpClient.Redirect.NORMAL)
-            .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_NONE)) // 쿠키 아예 안 받음
-            .build();
-
+    // 차단할 헤더 목록 (엄격하게 적용)
     private static final Set<String> BLOCKED_HEADERS = Set.of(
             HttpHeaders.COOKIE.toLowerCase(),
             HttpHeaders.SET_COOKIE.toLowerCase(),
             "set-cookie2",
-            // Authorization은 전달해야 하므로 차단 목록에서 제거함
             "connection",
             "keep-alive",
+            "proxy-authenticate",
+            "proxy-authorization",
+            "te",
+            "trailer",
             "transfer-encoding",
             "upgrade",
             HttpHeaders.CONTENT_LENGTH.toLowerCase(),
             HttpHeaders.CONTENT_ENCODING.toLowerCase(),
-            HttpHeaders.HOST.toLowerCase(),
-            HttpHeaders.CACHE_CONTROL.toLowerCase(),
-            HttpHeaders.EXPIRES.toLowerCase(),
-            "pragma");
+            HttpHeaders.HOST.toLowerCase()
+    );
 
     @GET
     @Path("/items")
     public Response getItems(@Context HttpServletRequest req) {
         String targetUrl = LABELIT_BASE_URL;
         if (req.getQueryString() != null) targetUrl += "?" + req.getQueryString();
-        return executeSmartProxy(req, targetUrl, HttpMethod.GET, HttpRequest.BodyPublishers.noBody());
+        return executeBufferedProxy(req, targetUrl, HttpMethod.GET, HttpRequest.BodyPublishers.noBody());
     }
 
     @PUT
     @Path("/items")
     public Response putItems(@Context HttpServletRequest req) {
+        // PUT 요청은 Body를 읽어야 하므로 스트림으로 받지만, 즉시 전송합니다.
         HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofInputStream(() -> {
             try {
                 return req.getInputStream();
@@ -75,89 +68,112 @@ public class PerfectProxyResource {
                 throw new WebApplicationException(e);
             }
         });
-        return executeSmartProxy(req, LABELIT_BASE_URL, HttpMethod.PUT, bodyPublisher);
+        return executeBufferedProxy(req, LABELIT_BASE_URL, HttpMethod.PUT, bodyPublisher);
     }
 
     @DELETE
     @Path("/items/{labelId}")
     public Response deleteItem(@Context HttpServletRequest req, @PathParam("labelId") String labelId) {
         String targetUrl = LABELIT_BASE_URL + "/" + labelId;
-        return executeSmartProxy(req, targetUrl, HttpMethod.DELETE, HttpRequest.BodyPublishers.noBody());
+        return executeBufferedProxy(req, targetUrl, HttpMethod.DELETE, HttpRequest.BodyPublishers.noBody());
     }
 
-    private Response executeSmartProxy(HttpServletRequest req, String targetUrl, String method, HttpRequest.BodyPublisher body) {
+    /**
+     * [핵심 변경] executeBufferedProxy
+     * 스트리밍(StreamingOutput)을 제거하고, byte[]로 다 받은 뒤 연결을 끊습니다.
+     */
+    private Response executeBufferedProxy(HttpServletRequest req, String targetUrl, String method, HttpRequest.BodyPublisher body) {
+        // 1. 매 요청마다 완전히 독립된 HttpClient 생성 (쿠키 없음, 리다이렉트 없음)
+        HttpClient client = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1) // HTTP/1.1 강제
+                .connectTimeout(Duration.ofSeconds(5))
+                .followRedirects(HttpClient.Redirect.NEVER) // 리다이렉트 자동 따르기 금지 (보안 강화)
+                .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_NONE)) // 쿠키 저장소 원천 봉쇄
+                .build();
+
         try {
+            // 2. 요청 빌더 (헤더 복사 및 정리)
             HttpRequest.Builder builder = HttpRequest.newBuilder()
                     .uri(URI.create(targetUrl))
                     .method(method, body)
-                    .header(HttpHeaders.ACCEPT_ENCODING, "identity")
-                    // [전략 2] Connection: close 헤더 추가
-                    // Static Client가 커넥션 풀을 가지고 있어도, 이 헤더가 있으면
-                    // 요청이 끝난 후 즉시 소켓을 끊어버립니다. (세션 섞임 방지 핵심)
-                    .header("Connection", "close"); 
+                    .header("Connection", "close"); // [중요] Keep-Alive 비활성화
 
-            // [전략 3] 원래 요청자(Original Requester)의 인증 정보 전달
-            // 기존 ADMIN_TOKEN 대신 들어온 요청의 Authorization 헤더를 그대로 넘깁니다.
-            String userAuth = req.getHeader(HttpHeaders.AUTHORIZATION);
-            if (userAuth != null) {
-                builder.header(HttpHeaders.AUTHORIZATION, userAuth);
-            } else {
-                // 로그인하지 않은 요청에 대한 처리 (필요 시 예외 처리 또는 익명 허용)
-                // builder.header(HttpHeaders.AUTHORIZATION, ADMIN_TOKEN); // 필요하다면 폴백 사용
-            }
+            // 3. 헤더 복사 (Auth 토큰 포함, 쿠키 제외)
+            copyRequestHeaders(req, builder);
 
-            // 나머지 허용 헤더 복사
-            Enumeration<String> headerNames = req.getHeaderNames();
-            while (headerNames.hasMoreElements()) {
-                String name = headerNames.nextElement();
-                // Authorization은 위에서 수동 처리했으므로 중복 방지
-                if (isAllowedHeader(name) && !name.equalsIgnoreCase(HttpHeaders.AUTHORIZATION)) {
-                    builder.header(name, req.getHeader(name));
-                }
-            }
+            // 4. 요청 전송 (동기 블로킹)
+            HttpResponse<InputStream> upstreamResponse = client.send(builder.build(), HttpResponse.BodyHandlers.ofInputStream());
 
-            HttpResponse<InputStream> upstreamResponse = httpClient.send(builder.build(), HttpResponse.BodyHandlers.ofInputStream());
+            // 5. 응답 데이터 처리 (메모리에 로드)
+            // 스트리밍을 하지 않고, 여기서 데이터를 모두 읽어버린 후 소켓을 닫습니다.
+            byte[] responseData = readAndDecompressEntity(upstreamResponse);
+            
+            // [중요] 여기서 이미 Jira와의 연결은 끝났습니다. 세션이 섞일 틈이 없습니다.
 
-            // --- 이하 응답 처리 로직은 동일 ---
-            String contentEncoding = upstreamResponse.headers().firstValue(HttpHeaders.CONTENT_ENCODING).orElse("");
-            InputStream rawStream = upstreamResponse.body();
-
-            if ("gzip".equalsIgnoreCase(contentEncoding)) {
-                rawStream = new GZIPInputStream(rawStream);
-            } else if ("deflate".equalsIgnoreCase(contentEncoding)) {
-                rawStream = new InflaterInputStream(rawStream);
-            }
-
+            // 6. 클라이언트 응답 생성
             Response.ResponseBuilder response = Response.status(upstreamResponse.statusCode());
 
-            response.header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
+            // 캐시 방지 헤더 (브라우저가 이전 사용자 데이터를 보여주는 것 방지)
+            response.header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate, max-age=0");
             response.header(HttpHeaders.EXPIRES, "0");
             response.header("Pragma", "no-cache");
 
+            // 허용된 응답 헤더 복사
             upstreamResponse.headers().map().forEach((key, values) -> {
                 if (isAllowedHeader(key)) {
                     values.forEach(val -> response.header(key, val));
                 }
             });
 
-            if (upstreamResponse.statusCode() != Response.Status.NO_CONTENT.getStatusCode()) {
-                final InputStream finalStream = rawStream;
-                response.entity((StreamingOutput) output -> {
-                    try (InputStream in = finalStream) {
-                        in.transferTo(output);
-                    }
-                });
+            // 읽어둔 데이터를 응답으로 설정
+            if (responseData != null && responseData.length > 0) {
+                response.entity(new ByteArrayInputStream(responseData));
             }
 
             return response.build();
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            log.error("Proxy interrupted", e);
-            return Response.serverError().build();
+            log.error("Proxy Interrupted", e);
+            return Response.serverError().entity("Proxy Error: Interrupted").build();
         } catch (Exception e) {
-            log.error("Proxy failed", e);
-            return Response.serverError().build();
+            log.error("Proxy Failed: " + e.getMessage(), e);
+            return Response.serverError().entity("Proxy Error: " + e.getMessage()).build();
+        }
+    }
+
+    // 요청 헤더 복사 로직 분리
+    private void copyRequestHeaders(HttpServletRequest req, HttpRequest.Builder builder) {
+        Enumeration<String> headerNames = req.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
+            if (isAllowedHeader(name)) {
+                // 특정 헤더(Auth) 로그 찍어서 확인 (디버깅용, 운영 시 제거)
+                if (HttpHeaders.AUTHORIZATION.equalsIgnoreCase(name)) {
+                    String authVal = req.getHeader(name);
+                    log.debug("Proxying Auth Header: {}...", authVal.substring(0, Math.min(10, authVal.length()))); 
+                }
+                builder.header(name, req.getHeader(name));
+            }
+        }
+    }
+
+    // 압축 해제 및 바이트 배열 변환 (동기 처리)
+    private byte[] readAndDecompressEntity(HttpResponse<InputStream> response) throws IOException {
+        String encoding = response.headers().firstValue(HttpHeaders.CONTENT_ENCODING).orElse("");
+        
+        try (InputStream rawStream = response.body()) {
+            if (rawStream == null) return new byte[0];
+
+            InputStream wrappedStream = rawStream;
+            if ("gzip".equalsIgnoreCase(encoding)) {
+                wrappedStream = new GZIPInputStream(rawStream);
+            } else if ("deflate".equalsIgnoreCase(encoding)) {
+                wrappedStream = new InflaterInputStream(rawStream);
+            }
+            
+            // 모든 바이트를 읽어서 반환 (Java 9+)
+            return wrappedStream.readAllBytes();
         }
     }
 
