@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+@import 'tailwindcss/utilities';
+
+@source '../../node_modules/flowbite-svelte/dist';
+@source '../../node_modules/flowbite-svelte-icons/dist';
+@plugin 'flowbite/plugin';
+
+/* 
+  Scoped Preflight for #demo-app-root 
+  Minimally reproduces Tailwind's Preflight but scoped to the app container.
+  This prevents messing up the Confluence host page.
+*/
+
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+	body {
+		background-color: white;
+		color: var(--color-gray-900, #111827);
+		transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-duration: 200ms;
+	}
+}
+
+:root.dark body {
+	background-color: #1c2128;
+	color: #9fadbc;
+}

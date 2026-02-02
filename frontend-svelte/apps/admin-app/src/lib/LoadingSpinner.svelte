@@ -1,19 +1,38 @@
 <script lang="ts">
+	import { Spinner } from 'flowbite-svelte';
+
+	type SpinnerColor =
+		| 'primary'
+		| 'secondary'
+		| 'gray'
+		| 'red'
+		| 'orange'
+		| 'amber'
+		| 'yellow'
+		| 'lime'
+		| 'green'
+		| 'emerald'
+		| 'teal'
+		| 'cyan'
+		| 'sky'
+		| 'blue'
+		| 'indigo'
+		| 'violet'
+		| 'purple'
+		| 'fuchsia'
+		| 'pink'
+		| 'rose';
+
 	interface Props {
 		size?: 'sm' | 'md' | 'lg';
-		color?: string;
+		color?: SpinnerColor;
 	}
 
-	let { size = 'md', color = 'border-blue-500' }: Props = $props();
+	let { size = 'md', color = 'blue' }: Props = $props();
 
-	const sizeClasses = {
-		sm: 'h-4 w-4 border-2',
-		md: 'h-8 w-8 border-4',
-		lg: 'h-12 w-12 border-8'
-	};
+	// Map sizes to Flowbite Spinner sizes (which are strings "1" to "12" or specific tailwind classes)
+	// Flowbite Spinner size usage: size="8" (w-8 h-8)
+	const spinnerSize = $derived(size === 'sm' ? '4' : size === 'md' ? '8' : '12');
 </script>
 
-<div
-	class="{sizeClasses[size]} animate-spin rounded-full {color} border-t-transparent"
-	aria-label="Loading..."
-></div>
+<Spinner size={spinnerSize} {color} />

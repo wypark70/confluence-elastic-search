@@ -1,140 +1,503 @@
 <script lang="ts">
-	import SearchInput from '../lib/SearchInput.svelte';
-	import SearchResults from '../lib/SearchResults.svelte';
-	import LoadingSpinner from '../lib/LoadingSpinner.svelte';
+	/**
+	 * Confluence Search - Single Page Implementation
+	 * @description 모든 기능을 하나의 페이지에 통합
+	 */
+
+	const Jquery = (globalThis as any).$;
+
+	// --- 다크모드 상태 ---
+	let isDarkMode = $state(false);
+
+	// --- 검색 상태 ---
+	let searchQuery = $state('marketing strategy');
+	let hasSearched = $state(true);
+
+	// --- 타입 정의 ---
 	interface SearchResult {
-		id: number;
-		type: 'page' | 'home' | 'blog' | 'attachment';
+		id: string;
 		title: string;
+		excerpt: string;
 		space: string;
 		date: string;
-		snippet: string;
-		highlightValues: string[];
-		url?: string;
+		type: 'page' | 'blog' | 'attachment' | 'space' | 'excel' | 'powerpoint';
 	}
 
-	let searchQuery = '';
-	let searchResults: SearchResult[] = [
+	// --- 모의 결과 데이터 ---
+	const results: SearchResult[] = [
 		{
-			id: 1,
-			type: 'page',
-			title: 'A quick look at the editor (step 2 of 9)',
-			space: 'Demonstration Space',
-			date: 'Mar 05, 2024',
-			snippet:
-				"Let's start with the editor. You'll use the Confluence editor to create and edit pages. You can type in the editor as you would in any document, apply...",
-			highlightValues: ['quick']
+			id: '1',
+			title: 'Strategy FY19',
+			excerpt:
+				'This page outlines the Product Marketing strategy for FY19, including the OKRs and strategic initiatives for each quarter.',
+			space: 'Product Marketing',
+			date: 'Jan 07, 2019',
+			type: 'page'
 		},
 		{
-			id: 2,
-			type: 'home',
-			title: 'Welcome to Confluence',
-			space: 'Demonstration Space',
-			date: 'Mar 05, 2024',
-			snippet:
-				'welcome.png With Confluence it is easy to create, edit and share content with your team. Choose a topic below to start learning how. What is...',
-			highlightValues: []
+			id: '2',
+			title: 'Channel Marketing Budget.xlsx',
+			excerpt:
+				'Channel Marketing budget Channel marketing budget Anticipated sales total ($AUD) 750 200 500 1600 1200 1500',
+			space: 'Product Marketing / ... / Comms and marketing',
+			date: 'Jan 2019',
+			type: 'excel'
+		},
+		{
+			id: '3',
+			title: 'Marketing brand refresh - project overview.pptx',
+			excerpt:
+				'Brand refresh – project plan Brand and marketing team Last year, the marketing team launched a new project to refresh our brand',
+			space: 'Comms and Marketing / ... / Brand guidelines',
+			date: 'Jan 03, 2019',
+			type: 'powerpoint'
+		},
+		{
+			id: '4',
+			title: 'Marketing assets',
+			excerpt:
+				'Find all the marketing assets you need. Download hi res logo files, branded slide decks and illustrations.',
+			space: 'Product Marketing',
+			date: 'Jan 03, 2019',
+			type: 'page'
+		},
+		{
+			id: '5',
+			title: 'Comms and Marketing',
+			excerpt:
+				'The Communications and Marketing team looks after our brand guidelines, including logos, typefaces and other assets.',
+			space: 'Space',
+			date: '',
+			type: 'space'
 		}
 	];
-	let loading = false;
-	let searchPerformed = false;
 
-	async function handleSearch(query: string) {
-		searchQuery = query;
-
-		if (!query.trim()) {
-			searchResults = [];
-			searchPerformed = false;
-			return;
+	// Initialize theme from localStorage
+	$effect(() => {
+		const savedTheme = localStorage.getItem('theme');
+		if (savedTheme === 'dark') {
+			isDarkMode = true;
+		} else if (savedTheme === 'light') {
+			isDarkMode = false;
+		} else {
+			// Auto-detect system preference
+			isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 		}
+	});
 
-		loading = true;
-		searchPerformed = true;
+	// Apply theme using AUI Design Tokens API
+	$effect(() => {
+		// Wait for AUI to be loaded
+		if (typeof window !== 'undefined' && (window as any).AJS?.DesignTokens) {
+			const theme = isDarkMode ? 'dark' : 'light';
+			(window as any).AJS.DesignTokens.setGlobalTheme(theme);
+			localStorage.setItem('theme', theme);
+		} else if (isDarkMode) {
+			// Fallback: use data-theme attribute
+			document.documentElement.setAttribute('data-theme', 'dark');
+			localStorage.setItem('theme', 'dark');
+		} else {
+			document.documentElement.removeAttribute('data-theme');
+			localStorage.setItem('theme', 'light');
+		}
+	});
 
-		try {
-			// Simulate API delay
-			await new Promise((resolve) => setTimeout(resolve, 500));
-
-			// Mock filter results
-			const mockResults = [
-				{
-					id: 1,
-					type: 'page' as const,
-					title: 'A quick look at the editor (step 2 of 9)',
-					space: 'Demonstration Space',
-					date: 'Mar 05, 2024',
-					snippet:
-						"Let's start with the editor. You'll use the Confluence editor to create and edit pages. You can type in the editor as you would in any document, apply...",
-					highlightValues: ['quick']
-				},
-				{
-					id: 2,
-					type: 'home' as const,
-					title: 'Welcome to Confluence',
-					space: 'Demonstration Space',
-					date: 'Mar 05, 2024',
-					snippet:
-						'welcome.png With Confluence it is easy to create, edit and share content with your team. Choose a topic below to start learning how. What is...',
-					highlightValues: []
+	// Initialize Select2 after DOM is ready
+	$effect(() => {
+		if (typeof window !== 'undefined' && (globalThis as any).$) {
+			Jquery(document).ready(function () {
+				const select2Element = Jquery('#select2-example');
+				if (select2Element.length && !select2Element.hasClass('select2-hidden-accessible')) {
+					select2Element.select2({
+						theme: 'default',
+						width: '100%'
+					});
 				}
-			];
-
-			const filtered = mockResults.filter(
-				(result) =>
-					result.title.toLowerCase().includes(query.toLowerCase()) ||
-					result.snippet.toLowerCase().includes(query.toLowerCase())
-			);
-
-			searchResults = filtered;
-		} catch (error) {
-			console.error('Search failed:', error);
-			searchResults = [];
-		} finally {
-			loading = false;
+			});
 		}
+	});
+
+	// Update Select2 styling when theme changes
+	$effect(() => {
+		if (typeof window !== 'undefined' && (globalThis as any).$) {
+			const jq = (globalThis as any).$;
+			const select2Element = jq('#select2-example');
+
+			if (select2Element.length && select2Element.hasClass('select2-hidden-accessible')) {
+				// Destroy and reinitialize with theme-aware styling
+				select2Element.select2('destroy');
+				select2Element.select2({
+					theme: 'default',
+					width: '100%'
+				});
+			}
+		}
+	});
+
+	function toggleTheme() {
+		isDarkMode = !isDarkMode;
+	}
+
+	function handleSearch(e: Event) {
+		e.preventDefault();
+		hasSearched = true;
+	}
+
+	function clearSearch() {
+		searchQuery = '';
 	}
 </script>
 
-<div
-	class="flex min-h-screen flex-col bg-white font-sans text-gray-900 dark:bg-[#1c2128] dark:text-[#9fadbc]"
->
-	<div class="flex flex-1 overflow-hidden">
-		<!-- Main Content -->
-		<div class="flex-1 overflow-y-auto p-8">
-			<!-- Search Bar -->
-			<div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2c333a]">
-				<div class="relative flex-1">
-					<SearchInput value={searchQuery} {loading} onSearch={handleSearch} />
-				</div>
-			</div>
+<svelte:head>
+	<title>CQL Search - Confluence</title>
+</svelte:head>
 
-			<!-- Results Section -->
-			<div class="mb-6 flex items-end justify-between">
-				<h2 class="text-lg text-gray-600 dark:text-[#768390]">
-					{searchPerformed
-						? `${searchResults.length} search result${searchResults.length !== 1 ? 's' : ''}`
-						: '4 search results'}
-				</h2>
-				<button class="text-sm text-blue-600 hover:underline dark:text-[#58a6ff]"
-					>Search tips</button
+<!-- App Container -->
+<div id="app">
+	<!-- AUI Header -->
+	<header id="header" class="aui-header aui-dropdown2-trigger-group">
+		<div class="aui-header-inner">
+			<div class="aui-header-primary">
+				<h1 class="aui-header-logo aui-header-logo-textonly">
+					<a href="/">CQL Search</a>
+				</h1>
+				<form class="aui-form" onsubmit={handleSearch}>
+					<div class="field-group">
+						<input
+							type="text"
+							class="text long-field search-input-large"
+							placeholder="Search"
+							bind:value={searchQuery}
+						/>
+						{#if searchQuery}
+							<button
+								type="button"
+								class="aui-button aui-button-link clear-button"
+								onclick={clearSearch}
+							>
+								✕
+							</button>
+						{/if}
+					</div>
+				</form>
+			</div>
+			<div class="aui-header-secondary">
+				<button
+					class="aui-button aui-button-subtle"
+					onclick={toggleTheme}
+					title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
 				>
+					{#if isDarkMode}
+						☀️
+					{:else}
+						🌙
+					{/if}
+				</button>
 			</div>
-
-			<!-- Search Results -->
-			{#if loading}
-				<div class="flex justify-center p-8">
-					<LoadingSpinner size="lg" />
-				</div>
-			{:else if searchResults.length > 0}
-				<SearchResults results={searchResults} />
-			{:else if searchPerformed}
-				<div class="py-8 text-center text-gray-500 dark:text-[#768390]">
-					<p>No results found for "{searchQuery}"</p>
-					<p class="mt-2 text-sm">Try different keywords or check your spelling</p>
-				</div>
-			{:else}
-				<SearchResults results={searchResults} />
-			{/if}
 		</div>
-	</div>
+	</header>
+
+	<!-- Main Content -->
+	<main>
+		<!-- AUI Page Panel with Sidebar -->
+		<div class="aui-page-panel">
+			<div class="aui-page-panel-inner">
+				<!-- Left Sidebar - AUI Navigation -->
+				<aside class="aui-page-panel-sidebar sidebar-fixed">
+					<div class="aui-navgroup aui-navgroup-vertical">
+						<div class="aui-navgroup-inner">
+							<div class="aui-nav-heading"><strong>FILTER BY</strong></div>
+						</div>
+
+						<!-- Space Filter -->
+						<div class="aui-navgroup-inner">
+							<ul class="aui-nav">
+								<select class="aui-select select-full-width" id="select2-example" multiple>
+									<option value="CONF">Confluence</option>
+									<option value="JIRA">JIRA</option>
+									<option value="BAM">Bamboo</option>
+									<option value="JAG">JIRA Agile</option>
+									<option value="CAP">JIRA Capture</option>
+									<option value="AUI">AUI</option>
+								</select>
+							</ul>
+						</div>
+
+						<!-- Contributor Filter -->
+						<div class="aui-navgroup-inner">
+							<ul class="aui-nav">
+								<li>
+									<button class="aui-button aui-button-subtle filter-button">
+										<span class="aui-icon aui-icon-small aui-iconfont-person"></span>
+										Contributor
+										<span class="aui-icon aui-icon-small aui-iconfont-chevron-down chevron-right"
+										></span>
+									</button>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Type Filter -->
+						<div class="aui-navgroup-inner">
+							<ul class="aui-nav">
+								<li>
+									<button class="aui-button aui-button-subtle filter-button">
+										<span class="aui-icon aui-icon-small aui-iconfont-blogroll"></span>
+										Type
+										<span class="aui-icon aui-icon-small aui-iconfont-chevron-down chevron-right"
+										></span>
+									</button>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Date Filter -->
+						<div class="aui-navgroup-inner">
+							<ul class="aui-nav">
+								<li>
+									<button class="aui-button aui-button-subtle filter-button">
+										<span class="aui-icon aui-icon-small aui-iconfont-calendar"></span>
+										Date
+										<span
+											class="aui-icon aui-icon-small aui-iconfont-chevron-down"
+											style="float: right;"
+										></span>
+									</button>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Label Filter -->
+						<div class="aui-navgroup-inner">
+							<ul class="aui-nav">
+								<li>
+									<button class="aui-button aui-button-subtle filter-button">
+										<span class="aui-icon aui-icon-small aui-iconfont-label"></span>
+										Label
+										<span
+											class="aui-icon aui-icon-small aui-iconfont-chevron-down"
+											style="float: right;"
+										></span>
+									</button>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Space Category Filter -->
+						<div class="aui-navgroup-inner">
+							<ul class="aui-nav">
+								<li>
+									<button class="aui-button aui-button-subtle filter-button">
+										<span class="aui-icon aui-icon-small aui-iconfont-component"></span>
+										Space category
+										<span
+											class="aui-icon aui-icon-small aui-iconfont-chevron-down"
+											style="float: right;"
+										></span>
+									</button>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Advanced Search -->
+						<div class="aui-navgroup-inner">
+							<ul class="aui-nav">
+								<li>
+									<a href="#advanced" class="aui-nav-item">
+										<span class="aui-icon aui-icon-small aui-iconfont-search"></span>
+										Advanced search
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</aside>
+
+				<!-- Main Content -->
+				<section class="aui-page-panel-content">
+					<!-- Search Input -->
+					<div class="aui-page-header">
+						<div class="aui-page-header-inner">
+							<div class="aui-page-header-main">
+								<form class="aui-form" onsubmit={handleSearch}>
+									<div class="field-group">
+										<input
+											type="text"
+											class="text long-field"
+											placeholder="Search"
+											bind:value={searchQuery}
+											style="font-size: 16px;"
+										/>
+										{#if searchQuery}
+											<button
+												type="button"
+												class="aui-button aui-button-link"
+												onclick={clearSearch}
+												style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);"
+											>
+												✕
+											</button>
+										{/if}
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+
+					<!-- Results Header -->
+					<div class="aui-page-header">
+						<div class="aui-page-header-inner">
+							<div class="aui-page-header-main">
+								<p class="result-count">18 search results</p>
+							</div>
+							<div class="aui-page-header-actions">
+								<a href="#tips" class="aui-button aui-button-link">Search tips</a>
+							</div>
+						</div>
+					</div>
+
+					<!-- Search Results -->
+					<div class="results-container">
+						{#each results as result}
+							<a href="#result-{result.id}" class="result-item">
+								<div class="result-icon">
+									<span class="aui-avatar aui-avatar-large">
+										<span class="aui-avatar-inner">
+											<span
+												class="aui-icon aui-icon-large aui-iconfont-{result.type === 'page'
+													? 'page-default'
+													: result.type === 'excel'
+														? 'table'
+														: result.type === 'powerpoint'
+															? 'blogroll'
+															: result.type === 'space'
+																? 'space-default'
+																: 'page-default'}"
+											></span>
+										</span>
+									</span>
+								</div>
+								<div class="result-content">
+									<h3 class="result-title">
+										{result.title}
+									</h3>
+									<p class="result-meta">
+										<strong>{result.space}</strong>
+										{#if result.date}
+											<span class="result-meta-date">{result.date}</span>
+										{/if}
+									</p>
+									<p class="result-excerpt">
+										{result.excerpt}
+									</p>
+								</div>
+							</a>
+						{/each}
+					</div>
+				</section>
+			</div>
+		</div>
+	</main>
 </div>
+
+<style>
+	/* Layout */
+	.field-group {
+		position: relative;
+	}
+
+	.sidebar-fixed {
+		width: 18rem;
+		flex-shrink: 0;
+	}
+
+	/* Search Input */
+	.search-input-large {
+		font-size: 16px;
+	}
+
+	.clear-button {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	/* Filter Buttons */
+	.filter-button {
+		width: 100%;
+		text-align: left;
+	}
+
+	.chevron-right {
+		float: right;
+	}
+
+	/* Select */
+	.select-full-width {
+		width: 100%;
+	}
+
+	/* Search Results */
+	.results-container {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.result-item {
+		display: flex;
+		gap: 16px;
+		padding: 12px;
+		border-radius: 3px;
+		text-decoration: none;
+		color: inherit;
+		transition: background 0.2s;
+	}
+
+	.result-icon {
+		flex-shrink: 0;
+		width: 40px;
+		height: 40px;
+	}
+
+	.result-content {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.result-title {
+		margin: 0 0 4px 0;
+		font-size: 16px;
+		font-weight: 600;
+	}
+
+	.result-meta {
+		color: #6b778c;
+		font-size: 12px;
+		margin: 0 0 8px 0;
+	}
+
+	.result-meta-date {
+		margin-left: 8px;
+	}
+
+	.result-excerpt {
+		color: #42526e;
+		font-size: 14px;
+		margin: 0;
+		line-height: 1.5;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+
+	.result-count {
+		color: #6b778c;
+		font-size: 12px;
+		margin: 0;
+	}
+</style>

@@ -19,7 +19,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: always
+    restart: on
 
   confluence:
     image: atlassian/confluence:${CONFLUENCE_VERSION}
@@ -41,7 +41,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    restart: always
+    restart: on
 
   jira:
     image: atlassian/jira-software:${JIRA_VERSION}
@@ -64,7 +64,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    restart: always
+    restart: on
 
 networks:
   atlassian-net:

@@ -4,7 +4,9 @@
 	import LoadingSpinner from '../lib/LoadingSpinner.svelte';
 	import Pagination from '../lib/Pagination.svelte';
 	import getSampleResponse from '$lib/assets/SampleResponse';
-	import { Folder, User, Image, Calendar, Tag, LayoutGrid, ChevronDown } from 'lucide-svelte';
+	import { Tag, LayoutGrid } from 'lucide-svelte';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	interface SearchResult {
 		id: number;
@@ -25,59 +27,43 @@
 		totalPages: number;
 	}
 
-	let searchQuery = '';
-	let searchResults: SearchResult[] = [];
-	let loading = false;
-	let searchPerformed = false;
-	let currentPage = 1;
-	let totalResults = 0;
-	let totalPages = 0;
-	let pageSize = 5;
+	let searchQuery = $state('');
+	let searchResults: SearchResult[] = $state([]);
+	let loading = $state(false);
+	let searchPerformed = $state(false);
 
-	const filters = [
-		{ label: 'Space', icon: Folder },
-		{ label: 'Contributor', icon: User },
-		{ label: 'Type', icon: Image }, // Using Image as a proxy for "Type" or generic media
-		{ label: 'Date', icon: Calendar },
-		{ label: 'Label', icon: Tag },
-		{ label: 'Space category', icon: LayoutGrid }
-	];
+	// Derive state from URL
+	let currentPage = $derived(Number(page.url.searchParams.get('page')) || 1);
+	let currentQuery = $derived(page.url.searchParams.get('q') || '');
+	let totalResults = $state(0);
+	let totalPages = $state(0);
 
-	async function handleSearch(query: string, page: number = 1) {
-		searchQuery = query;
-		currentPage = page;
-
-		if (!query.trim()) {
+	// React to URL changes
+	$effect(() => {
+		if (currentQuery) {
+			searchQuery = currentQuery; // Sync input with URL
+			performSearch(currentQuery, currentPage);
+		} else {
+			// Reset state if no query
+			searchQuery = '';
 			searchResults = [];
 			searchPerformed = false;
 			totalResults = 0;
 			totalPages = 0;
-			return;
 		}
+	});
 
+	async function performSearch(query: string, pageNum: number) {
 		loading = true;
 		searchPerformed = true;
 
 		try {
-			/*const response = await fetch(`/rest/myplugin/1/feedback/search?q=${encodeURIComponent(query)}&page=${page}&size=${pageSize}`);
-			if (response.ok) {
-				const data: SearchResponse = await response.json();
-				searchResults = data.results;
-				totalResults = data.totalResults;
-				totalPages = data.totalPages;
-				currentPage = data.currentPage;
-			} else {
-				console.error('Search failed:', response.statusText);
-				searchResults = [];
-				totalResults = 0;
-				totalPages = 0;
-			}*/
-
-			const data: SearchResponse = getSampleResponse(query, currentPage);
+			// Simulate API call
+			await new Promise((resolve) => setTimeout(resolve, 300)); // Add slight delay for realism
+			const data: SearchResponse = getSampleResponse(query, pageNum);
 			searchResults = data.results;
 			totalResults = data.totalResults;
 			totalPages = data.totalPages;
-			currentPage = data.currentPage;
 		} catch (error) {
 			console.error('Search failed:', error);
 			searchResults = [];
@@ -88,86 +74,81 @@
 		}
 	}
 
-	function handlePageChange(page: number) {
-		handleSearch(searchQuery, page);
+	function handleSearch(query: string) {
+		if (!query.trim()) {
+			goto('?', { keepFocus: true });
+			return;
+		}
+		// Reset to page 1 for new searches
+		const url = new URL(page.url);
+		url.searchParams.set('q', query);
+		url.searchParams.set('page', '1');
+		goto(url.toString(), { keepFocus: true });
 	}
 </script>
 
-<div
-	class="flex min-h-screen flex-col bg-white font-sans text-gray-900 dark:bg-[#1c2128] dark:text-[#9fadbc]"
->
-	<div class="flex flex-1 overflow-hidden">
-		<!-- Sidebar -->
-		<div class="flex w-64 flex-col gap-4 border-r border-transparent p-8">
-			<!-- Border transparent for now, maybe layout specific -->
-
-			<div
-				class="mb-2 text-xs font-bold tracking-wider text-gray-500 uppercase dark:text-[#768390]"
-			>
-				Filter By
+<!-- Main Content Content -->
+<div class="flex h-full flex-col">
+	<!-- Top Search Bar Area -->
+	<div
+		class="z-10 border-b border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+	>
+		<div class="mx-auto max-w-4xl">
+			<div class="relative mb-4">
+				<SearchInput value={searchQuery} {loading} onSearch={handleSearch} />
 			</div>
 
-			{#each filters as filter}
-				<button
-					class="group flex w-full items-center justify-between rounded p-2 text-left transition-colors hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-800 dark:hover:bg-[#2d333b]"
-				>
-					<div class="flex items-center gap-3 text-gray-700 dark:text-[#c9d1d9]">
-						<filter.icon
-							size={18}
-							class="text-gray-500 group-hover:text-gray-900 dark:text-[#768390] dark:group-hover:text-[#c9d1d9]"
-						/>
-						<span class="text-sm">{filter.label}</span>
-					</div>
-					<ChevronDown size={14} class="text-gray-500 dark:text-[#768390]" />
-				</button>
-			{/each}
-
-			<div class="mt-auto pt-4">
-				<button
-					class="text-sm text-blue-600 hover:underline dark:bg-gray-800 dark:text-[#58a6ff] dark:hover:bg-gray-700"
-					>Advanced search</button
-				>
-			</div>
-		</div>
-
-		<!-- Main Content -->
-		<div class="flex-1 overflow-y-auto p-8">
-			<!-- Search Bar -->
-			<div class="flex items-center justify-between border-b border-gray-200 dark:border-[#2c333a]">
-				<div class="relative flex-1">
-					<SearchInput value={searchQuery} {loading} onSearch={handleSearch} />
-				</div>
-			</div>
-
-			<!-- Results Section -->
-			<div class="mb-6 flex items-end justify-between">
-				<h2 class="text-lg text-gray-600 dark:text-[#768390]">
+			<div class="flex items-center justify-between">
+				<h2 class="text-lg font-medium text-gray-700 dark:text-gray-200">
 					{searchPerformed
-						? `${totalResults} search result${totalResults !== 1 ? 's' : ''} (page ${currentPage} of ${totalPages})`
-						: 'Search for content'}
+						? `${totalResults} result${totalResults !== 1 ? 's' : ''} found`
+						: 'Search content'}
 				</h2>
-				<button class="text-sm text-blue-600 hover:underline dark:bg-gray-800 dark:text-[#58a6ff]"
+				<button
+					class="text-sm font-medium text-blue-600 transition-colors hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400"
 					>Search tips</button
 				>
 			</div>
+		</div>
+	</div>
 
-			<!-- Search Results -->
+	<!-- Scrollable Results Area -->
+	<div class="flex-1 overflow-y-auto bg-gray-50 p-6 dark:bg-gray-900">
+		<div class="mx-auto max-w-4xl pb-10">
 			{#if loading}
-				<div class="flex justify-center p-8">
+				<div class="flex justify-center p-12">
 					<LoadingSpinner size="lg" />
 				</div>
 			{:else if searchResults.length > 0}
 				<SearchResults results={searchResults} />
-
-				<Pagination {currentPage} {totalPages} onPageChange={handlePageChange} />
+				<div class="mt-8 flex justify-center">
+					<Pagination {currentPage} {totalPages} />
+				</div>
 			{:else if searchPerformed}
-				<div class="py-8 text-center text-gray-500 dark:text-[#768390]">
-					<p>No results found for "{searchQuery}"</p>
-					<p class="mt-2 text-sm">Try different keywords or check your spelling</p>
+				<div class="py-16 text-center">
+					<div
+						class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800"
+					>
+						<Tag size={32} class="text-gray-400" />
+					</div>
+					<p class="text-lg font-medium text-gray-900 dark:text-gray-100">
+						No results found for "{searchQuery}"
+					</p>
+					<p class="mt-2 text-gray-500 dark:text-gray-400">
+						Try adjusting your search or filter to find what you're looking for.
+					</p>
 				</div>
 			{:else}
-				<div class="py-8 text-center text-gray-500 dark:text-[#768390]">
-					<p>Enter a search query to find content</p>
+				<div class="py-16 text-center">
+					<div
+						class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20"
+					>
+						<LayoutGrid size={32} class="text-blue-500 dark:text-blue-400" />
+					</div>
+					<p class="text-lg font-medium text-gray-900 dark:text-gray-100">Start your search</p>
+					<p class="mt-2 text-gray-500 dark:text-gray-400">
+						Type in the search box above to find pages, spaces, and more.
+					</p>
 				</div>
 			{/if}
 		</div>

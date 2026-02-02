@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { Sun, Moon } from 'lucide-svelte';
 	import { theme } from '$lib/stores/theme.svelte';
+	import { Button } from 'flowbite-svelte';
 </script>
 
-<button
+<Button
+	color="light"
 	onclick={() => theme.toggle()}
-	class="flex items-center justify-center rounded-full border border-gray-200 p-2 transition-colors hover:bg-gray-200 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+	class="!p-2 rounded-full border-gray-200 dark:border-gray-800"
 	aria-label="Toggle theme"
 >
 	{#if theme.mode === 'light'}
@@ -13,4 +15,4 @@
 	{:else}
 		<Moon size={20} class="text-blue-300 dark:text-blue-400" />
 	{/if}
-</button>
+</Button>
