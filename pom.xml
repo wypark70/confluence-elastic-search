@@ -175,6 +175,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
+                            <skip>${skip.frontend.build}</skip>
                             <executable>pnpm</executable>
                             <arguments>
                                 <argument>install</argument>
@@ -188,6 +189,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
+                            <skip>${skip.frontend.build}</skip>
                             <executable>pnpm</executable>
                             <arguments>
                                 <argument>run</argument>
@@ -311,6 +313,7 @@
         <frontend.maven.plugin.version>1.15.0</frontend.maven.plugin.version>
         <node.version>18.19.0</node.version>
         <pnpm.version>8.15.0</pnpm.version>
+        <skip.frontend.build>false</skip.frontend.build>
         <kotlin.version>2.2.20</kotlin.version>
     </properties>
 
