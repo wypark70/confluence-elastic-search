@@ -18,8 +18,8 @@
 	},
 	"scripts": {
 		"generate:i18n": "paraglide-js compile --project ./project.inlang --outdir ./src/lib/i18n",
-		"build": "pnpm generate:i18n && tsc",
-		"clean": "rm -rf dist"
+		"build": "pnpm generate:i18n && tsc --incremental",
+		"clean": "rimraf dist .tsbuildinfo"
 	},
 	"dependencies": {
 		"lucide-svelte": "^0.562.0"
