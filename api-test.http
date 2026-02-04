@@ -1,19 +1,18 @@
-### /api
-GET https://baconipsum.com/api/?type=meat-and-filler&paras=1000
-
-
 @baseUrl = http://localhost:8090
 @username = admin
 @password = admin
+@cqlQuery = type=page AND title ~ 'Welcome'
 
-### 
+
+### /api
+GET https://baconipsum.com/api/?type=meat-and-filler&paras=1000
+
+###
 GET {{baseUrl}}/rest/api/space?limit=50&type=global&expand=description
 Content-Type: application/json
 Authorization: Basic {{username}} {{password}}
 
-
-@cqlQuery = type=page AND title ~ 'Welcome'
-### 
+###
 GET {{baseUrl}}/rest/api/content/search?cql={{cqlQuery}}
 Content-Type: application/json
 Authorization: Basic {{username}} {{password}}

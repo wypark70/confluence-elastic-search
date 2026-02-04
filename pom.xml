@@ -149,6 +149,8 @@
                         <Import-Package>
                             org.springframework.osgi.*;resolution:="optional",
                             org.eclipse.gemini.blueprint.*;resolution:="optional",
+                            android.os;resolution:="optional",
+                            kotlin.reflect.jvm.internal;resolution:="optional",
                             *
                         </Import-Package>
 

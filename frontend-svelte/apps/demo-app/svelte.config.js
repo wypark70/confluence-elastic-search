@@ -14,7 +14,7 @@ const config = {
 			strict: true
 		}),
 		paths: {
-			base: '/plugins/servlet/demo-app'
+			base: '/plugins/servlet/elastic-search/demo-app'
 		}
 	}
 };

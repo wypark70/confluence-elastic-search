@@ -4,8 +4,6 @@
 	 * @description 모든 기능을 하나의 페이지에 통합
 	 */
 
-	const Jquery = (globalThis as any).$;
-
 	// --- 다크모드 상태 ---
 	let isDarkMode = $state(false);
 
@@ -88,49 +86,24 @@
 	// Apply theme using AUI Design Tokens API
 	$effect(() => {
 		// Wait for AUI to be loaded
-		if (typeof window !== 'undefined' && (window as any).AJS?.DesignTokens) {
-			const theme = isDarkMode ? 'dark' : 'light';
-			(window as any).AJS.DesignTokens.setGlobalTheme(theme);
-			localStorage.setItem('theme', theme);
-		} else if (isDarkMode) {
-			// Fallback: use data-theme attribute
-			document.documentElement.setAttribute('data-theme', 'dark');
+		if (isDarkMode) {
+			// Fallback: use data-color-mode attribute
+			document.documentElement.setAttribute('data-color-mode', 'dark');
 			localStorage.setItem('theme', 'dark');
 		} else {
-			document.documentElement.removeAttribute('data-theme');
+			document.documentElement.setAttribute('data-color-mode', 'light');
 			localStorage.setItem('theme', 'light');
 		}
 	});
 
-	// Initialize Select2 after DOM is ready
+	// --- AUI Select2 Initialization ---
 	$effect(() => {
-		if (typeof window !== 'undefined' && (globalThis as any).$) {
-			Jquery(document).ready(function () {
-				const select2Element = Jquery('#select2-example');
-				if (select2Element.length && !select2Element.hasClass('select2-hidden-accessible')) {
-					select2Element.select2({
-						theme: 'default',
-						width: '100%'
-					});
-				}
+		if (typeof window !== 'undefined' && (window as any).AJS && (window as any).AJS.$) {
+			const jq = (window as any).AJS.$;
+			// Initialize once
+			jq(document).ready(function () {
+				jq('#select2-example').auiSelect2();
 			});
-		}
-	});
-
-	// Update Select2 styling when theme changes
-	$effect(() => {
-		if (typeof window !== 'undefined' && (globalThis as any).$) {
-			const jq = (globalThis as any).$;
-			const select2Element = jq('#select2-example');
-
-			if (select2Element.length && select2Element.hasClass('select2-hidden-accessible')) {
-				// Destroy and reinitialize with theme-aware styling
-				select2Element.select2('destroy');
-				select2Element.select2({
-					theme: 'default',
-					width: '100%'
-				});
-			}
 		}
 	});
 
@@ -436,6 +409,41 @@
 	/* Select */
 	.select-full-width {
 		width: 100%;
+	}
+
+	/* Select2 Dark Mode Global Overrides */
+	:global([data-color-mode='dark'] .select2-container-multi .select2-choices) {
+		background-color: #1d2125; /* Dark background */
+		border-color: #454f59; /* Dark border */
+		color: #b6c2cf; /* Light text */
+	}
+
+	:global(
+		[data-color-mode='dark'] .select2-container-multi .select2-choices .select2-search-choice
+	) {
+		background-color: #2c333a;
+		border-color: #454f59;
+		color: #b6c2cf;
+	}
+
+	:global([data-color-mode='dark'] .select2-dropdown-open .select2-choices) {
+		background-color: #1d2125;
+		border-color: #579dff; /* Focus color */
+	}
+
+	:global([data-color-mode='dark'] .select2-drop) {
+		background-color: #1d2125;
+		border-color: #454f59;
+		color: #b6c2cf;
+	}
+
+	:global([data-color-mode='dark'] .select2-results .select2-result-label) {
+		color: #b6c2cf;
+	}
+
+	:global([data-color-mode='dark'] .select2-results .select2-highlighted) {
+		background-color: #2c333a;
+		color: #fff;
 	}
 
 	/* Search Results */
