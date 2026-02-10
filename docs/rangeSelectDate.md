@@ -1,3 +1,4 @@
+```html
 <script>
   /**
    * Svelte 5 Date Range Picker
@@ -6,10 +7,10 @@
   import { fade, slide } from 'svelte/transition';
 
   // Props
-  let { 
-    startDate = $bindable(null), 
+  let {
+    startDate = $bindable(null),
     endDate = $bindable(null),
-    onSelect = null 
+    onSelect = null
   } = $props();
 
   // State
@@ -28,7 +29,7 @@
     const month = viewDate.getMonth();
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
+
     const days = [];
     // Prev month padding
     const prevMonthLastDay = new Date(year, month, 0).getDate();
@@ -65,7 +66,7 @@
 
   function handleDateClick(d) {
     const selected = new Date(d.year, d.month, d.day);
-    
+
     if (!startDate || (startDate && endDate)) {
       startDate = selected;
       endDate = null;
@@ -115,7 +116,7 @@
 
 <div bind:this={containerRef} class="relative w-full max-w-sm font-sans">
   <!-- Display Field -->
-  <button 
+  <button
     onclick={() => isOpen = !isOpen}
     class="w-full h-14 flex items-center justify-between px-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:border-blue-500 transition-all group"
   >
@@ -139,7 +140,7 @@
 
   <!-- Calendar Dropdown -->
   {#if isOpen}
-    <div 
+    <div
       transition:slide={{ duration: 200 }}
       class="absolute z-50 mt-3 w-[340px] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl shadow-2xl p-4 overflow-hidden"
     >
@@ -171,7 +172,7 @@
           {@const range = isInRange(d, startDate, endDate || hoverDate)}
           {@const isStart = isSameDate(fullDate, startDate)}
           {@const isEnd = isSameDate(fullDate, endDate)}
-          
+
           <div class="relative py-1 flex justify-center items-center">
             <!-- Range background -->
             {#if range}
@@ -208,3 +209,4 @@
     </div>
   {/if}
 </div>
+```
