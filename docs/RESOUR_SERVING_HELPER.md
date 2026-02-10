@@ -1,7 +1,7 @@
 ```mermaid
 sequenceDiagram
     participant User as User Browser
-    participant Servlet as AppServlet<br/>(User/Admin/Demo)
+    participant Servlet as AppServlet<br/>(User/Admin)
     participant Helper as ResourceServingHelper
     participant ClassLoader as ClassPath Resource
     participant Response as HttpServletResponse

@@ -29,13 +29,6 @@
         <url-pattern>/elastic-search/admin-app/*</url-pattern>
     </servlet>
 
-    <!-- Demo App Servlet -->
-    <servlet key="demo-app-servlet" name="Demo App Servlet"
-        class="com.atsoft.confluence.plugin.elasticsearch.servlet.DemoAppServlet">
-        <url-pattern>/elastic-search/demo-app/*</url-pattern>
-    </servlet>
-
-
     <!-- User App Access -->
     <web-item key="user-search-link" section="system.header/left" weight="40">
         <label>Elastic Search</label>
@@ -47,13 +40,6 @@
     <web-item key="admin-config-link" section="system.admin/config" weight="100">
         <label>Elastic Search Config</label>
         <link>/plugins/servlet/elastic-search/admin-app/</link>
-        <styleClass>aui-button</styleClass>
-    </web-item>
-
-    <!-- Demo App Access -->
-    <web-item key="demo-app-link" section="system.header/left" weight="39">
-        <label>Demo App</label>
-        <link>/plugins/servlet/elastic-search/demo-app/</link>
         <styleClass>aui-button</styleClass>
     </web-item>
 

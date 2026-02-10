@@ -109,15 +109,6 @@ importers:
         specifier: ^0.562.0
         version: 0.562.0(svelte@5.46.1)
 
-  apps/demo-app:
-    dependencies:
-      '@elastic-search/shared':
-        specifier: workspace:*
-        version: link:../../shared
-      lucide-svelte:
-        specifier: ^0.562.0
-        version: 0.562.0(svelte@5.46.1)
-
   apps/user-app:
     dependencies:
       '@elastic-search/shared':

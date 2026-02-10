@@ -55,14 +55,14 @@ public class PerfectProxyResource {
             HttpHeaders.HOST.toLowerCase(),
             HttpHeaders.CACHE_CONTROL.toLowerCase(),
             HttpHeaders.EXPIRES.toLowerCase(),
-            "pragma"
-    );
+            "pragma");
 
     @GET
     @Path("/items")
     public Response getItems(@Context HttpServletRequest req) {
         String targetUrl = LABELIT_BASE_URL;
-        if (req.getQueryString() != null) targetUrl += "?" + req.getQueryString();
+        if (req.getQueryString() != null)
+            targetUrl += "?" + req.getQueryString();
         return executeSmartProxy(req, targetUrl, HttpMethod.GET, HttpRequest.BodyPublishers.noBody());
     }
 
@@ -86,7 +86,8 @@ public class PerfectProxyResource {
         return executeSmartProxy(req, targetUrl, HttpMethod.DELETE, HttpRequest.BodyPublishers.noBody());
     }
 
-    private Response executeSmartProxy(HttpServletRequest req, String targetUrl, String method, HttpRequest.BodyPublisher body) {
+    private Response executeSmartProxy(HttpServletRequest req, String targetUrl, String method,
+            HttpRequest.BodyPublisher body) {
         // [핵심 변경 1] 요청마다 새로운 HttpClient 생성 (Connection Isolation)
         // 비용이 들지만 세션 꼬임을 원천 차단하는 가장 확실한 방법입니다.
         HttpClient client = HttpClient.newBuilder()
@@ -114,7 +115,8 @@ public class PerfectProxyResource {
                 }
             }
 
-            HttpResponse<InputStream> upstreamResponse = client.send(builder.build(), HttpResponse.BodyHandlers.ofInputStream());
+            HttpResponse<InputStream> upstreamResponse = client.send(builder.build(),
+                    HttpResponse.BodyHandlers.ofInputStream());
 
             String contentEncoding = upstreamResponse.headers().firstValue(HttpHeaders.CONTENT_ENCODING).orElse("");
             InputStream rawStream = upstreamResponse.body();
