@@ -29,6 +29,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit5.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -69,7 +76,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- WIRED TEST RUNNER DEPENDENCIES -->
+        <!-- TEST dependencies -->
         <dependency>
             <groupId>com.atlassian.plugins</groupId>
             <artifactId>atlassian-plugins-osgi-testrunner</artifactId>
@@ -82,17 +89,19 @@
             <version>1.1.1</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest</artifactId>
-            <version>2.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -123,7 +132,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.42</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -284,9 +293,9 @@
     </build>
 
     <properties>
-        <confluence.version>8.5.4</confluence.version>
+        <confluence.version>9.2.14</confluence.version>
         <confluence.data.version>${confluence.version}</confluence.data.version>
-        <amps.version>9.9.1</amps.version>
+        <amps.version>9.11.4</amps.version>
         <atlassian.spring.scanner.version>2.2.0</atlassian.spring.scanner.version>
         <plugin.testrunner.version>2.0.16</plugin.testrunner.version>
         <osgi.javaconfig.version>0.6.0</osgi.javaconfig.version>
@@ -296,12 +305,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
 
+        <!-- Test dependencies -->
+        <junit5.version>5.10.2</junit5.version>
+        <lombok.version>1.18.42</lombok.version>
+
         <!-- Frontend build properties -->
         <frontend.maven.plugin.version>1.15.0</frontend.maven.plugin.version>
         <node.version>18.19.0</node.version>
         <pnpm.version>8.15.0</pnpm.version>
         <skip.frontend.build>false</skip.frontend.build>
-        <kotlin.version>2.2.20</kotlin.version>
+        <kotlin.version>2.3.10</kotlin.version>
     </properties>
 
 </project>
